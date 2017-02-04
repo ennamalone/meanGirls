@@ -1,7 +1,12 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
-import javax.swing.JFrame;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 import java.awt.event.*;
 
 // As with the previous JFrame classes, this class extends
@@ -36,57 +41,17 @@ class MouseJFrameq  extends JFrame implements MouseMotionListener{
         super.paint(g);
         super.paintComponents(g);
         if(show){
-          g.drawOval(200,1000,10,10);
-          g.drawOval(212,1000,10,10);
-          g.drawOval(224,1000,10,10);
+          g.drawOval(160,1000,10,10);
+          g.drawOval(175,1000,10,10);
+          g.drawOval(190,1000,10,10);
           g.setColor(Color.RED);
-          g.fillOval(200,1000,10,10);
+          g.fillOval(160,1000,10,10);
           g.setColor(Color.GREEN);
-          g.fillOval(212,1000,10,10);
+          g.fillOval(175,1000,10,10);
           g.setColor(Color.BLUE);
-          g.fillOval(224,1000,10,10);
+          g.fillOval(190,1000,10,10);
         }
    }
-
-// the methods required by the MouseListener interface.
-// Look up the MouseEvent class to see what the input to
-// these methods is.  The getX and getY methods return to
-// us the location of the mouseClick that generated the event.
-
-   //public void mouseClicked(MouseEvent e)
-   //{
-     //show = false;    
-  // }
-
-   //public void mouseEntered(MouseEvent e){
-   //}
-
-   //public void mouseExited(MouseEvent e){
-   //}
-
-  // public void mousePressed(MouseEvent e)
-  // {
-    	 // int xLocation = e.getX();
-	     // int yLocation = e.getY();
-	    //  show = true;
-	    //  circleXcenter = xLocation-circleRadius;
-	  //    circleYcenter = yLocation-circleRadius;
-	//      repaint();
-  // }
-
-  // public void mouseReleased(MouseEvent e){
-  // }
-   
- //  public void mouseMoved(MouseEvent e)
-   //{
-	 //  	  int xLocation = e.getX();
-	   //   int yLocation = e.getY();
-	     // show = true;
-	     // circleXcenter = xLocation-circleRadius;
-	      //circleYcenter = yLocation-circleRadius;
-	      //repaint();
-	   
-  // }
    
    public void mouseDragged(MouseEvent e)
    {
@@ -101,16 +66,15 @@ public void mouseMoved(MouseEvent arg0) {
 
 }
 
-
-
-//  This class actually creates one of those MouseJFrame objects
-// and sets its initial size and makes it visible (all using
-// methods that the MouseJFrame class inherits from JFrame+-9
-
 public class MyTestMouseWithNoClick{
 
-    public static void main(String[] a){
+    public static void main(String[] a) throws IOException{
+       String path = "C:\\Users\\Cian\\Desktop\\alpha3.jpg";
+       File file = new File(path);
+       BufferedImage image = ImageIO.read(file);
+       JLabel board = new JLabel(new ImageIcon(image));
        MouseJFrameq  myMouseJFrame2 = new MouseJFrameq ();
+       myMouseJFrame2.getContentPane().add(board);
        myMouseJFrame2.setSize(1200, 1200);
        myMouseJFrame2.setVisible(true);
        myMouseJFrame2.setTitle("meanGirls");
