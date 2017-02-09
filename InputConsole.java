@@ -5,11 +5,11 @@ import java.util.*;
 
 /* Written by Brian Finlay
 
-  Program to take input and print it to a console style jtext area
+  Program to take input and print it to a console style jtext area as name suggests
 
 */
 
-public class instruction_console_test extends JPanel{
+public class InputConsole extends JPanel{
 
     public static void main(String[] args){
 
