@@ -40,6 +40,7 @@ class BoardPanel extends JPanel {
         g2.drawImage(boardImage, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, this);
        for (int p=0; p<players.size(); p++) {
         	int position = players.get(p).getPosition();
+        	int money = players.get(p).getBalance(); /////
         	int sideLength = Monopoly.NUM_SQUARES/4;
         	int side = (int) position / sideLength;
         	float offset = (float) (position % sideLength) / sideLength + PLAYER_OFFSET[p];

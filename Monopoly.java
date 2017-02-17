@@ -4,11 +4,14 @@ public class Monopoly {
 
 	public static final int MAX_NUM_PLAYERS = 6;
 	public static final int NUM_SQUARES = 40;
+	public static final int rent = 50;
+	public static final int price = 450;
 	
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private Money money = new Money();
 	private UI ui = new UI(players);
+	
 	
 	Monopoly () {
 		for (int p=0; p<MAX_NUM_PLAYERS; p++) {
@@ -45,9 +48,21 @@ public class Monopoly {
 				{	
 					 // calls new class money
 					String numberAsString = Integer.toString(money.getBalance());
-					System.out.println(money.getBalance());
 					ui.displayString(numberAsString);	// prints out 1500 in response to balance entered
 				}
+			if(command.equals("pay rent"))
+			{	
+				 // calls new class money
+				String numberAsString1 = Integer.toString(money.payRent());
+				ui.displayString(numberAsString1);	// prints out 1500 in response to balance entered
+			}
+			if(command.equals("buy"))
+			{	
+				 // calls new class money
+				String numberAsString2 = Integer.toString(money.buyProperty());
+				ui.displayString(numberAsString2);	// prints out 1500 in response to balance entered
+			}
+			
 		} 
 		while (!command.equals("quit"));
 		return;

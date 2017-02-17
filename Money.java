@@ -14,4 +14,14 @@ public class Money
 	{
 		return balance;
 	}
+	
+	public int buyProperty()
+	{
+		return balance - Monopoly.price;
+	}
+	
+	public int payRent()
+	{
+		return balance - Monopoly.rent;
+	}
 }

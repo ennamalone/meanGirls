@@ -2,6 +2,7 @@
 public class Player { // moves player pieces around the board
 	
 	private int position;
+	private Money money = new Money();
 	
 	Player () {
 		position = 0;
@@ -20,6 +21,11 @@ public class Player { // moves player pieces around the board
 	
 	public int getPosition () {
 		return position;
+	}
+
+	public int getBalance() 
+	{
+		return money.getBalance(); //////
 	}
 	
 }
