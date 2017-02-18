@@ -79,6 +79,12 @@ public class Monopoly
 				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(validCommands);
 			}
+			
+			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property"))
+			{
+				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
+				ui.displayString(errorMessage);
+			}
 		} 
 		while (!command.equals("quit"));
 		return;
