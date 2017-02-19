@@ -8,6 +8,8 @@ public class Monopoly
 	public static final int price = 450;
 
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private ArrayList<String> players1 = new ArrayList<String>(); // used to add player names 
+	
 	private Money money = new Money();
 	private UI ui = new UI(players);
 	private
@@ -46,10 +48,30 @@ public class Monopoly
 	private void echo()
 	{
 		String command;
+		String pnums;
 		ui.display();
-		ui.displayString("ECHO MODE");
-		do 
+		ui.displayString("Please enter player 1s name"); // sets up arraylist
+		pnums = ui.getCommand();
+		
+			players1.add(0, pnums);
+			ui.displayString("player 1 is: " +players1.get(0)); // insert snarky brian comment about obvious
+			ui.displayString("Please enter next players name");
+			pnums = ui.getCommand();
+			players1.add(1, pnums);
+			ui.displayString("player 2 is: " +players1.get(1));
+			ui.displayString("Please enter next players name");
+			pnums = ui.getCommand();
+			players1.add(2, pnums);
+			ui.displayString("player 3 is: " +players1.get(2));
+			ui.displayString("Please enter next players name");
+			pnums = ui.getCommand();
+			players1.add(3, pnums);
+			ui.displayString("player 4 is: " +players1.get(3));
+			
+			
+		do
 		{
+			ui.displayString("\n" + "\n" +  players1.get(0));
 			command = ui.getCommand();
 			ui.displayString(command);
 
@@ -64,14 +86,14 @@ public class Monopoly
 			{	
 				// calls new class money
 				String numberAsString1 = Integer.toString(money.payRent());
-				ui.displayString(numberAsString1);	// prints out 1500 in response to balance entered
+				ui.displayString(numberAsString1);	
 			}
 
 			if(command.equalsIgnoreCase("buy"))
 			{	
 				// calls new class money
 				String numberAsString2 = Integer.toString(money.buyProperty());
-				ui.displayString(numberAsString2);	// prints out 1500 in response to balance entered
+				ui.displayString(numberAsString2);	
 			}
 
 			if(command.equalsIgnoreCase("help"))
