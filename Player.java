@@ -1,14 +1,22 @@
+public class Player {
 
-public class Player { // moves player pieces around the board
-	
 	private int position;
-	private Money money = new Money();
-	
-	Player () {
+	private String name = new String();
+
+	Player (String userName) {
+
+		name = userName;
 		position = 0;
 		return;
+
 	}
-	
+
+	public String getName(){
+
+		return name;
+
+	}
+
 	public void move (int squares) {
 		position = position + squares;
 		if (position < 0) {
@@ -18,14 +26,9 @@ public class Player { // moves player pieces around the board
 		}
 		return;
 	}
-	
+
 	public int getPosition () {
 		return position;
 	}
 
-	public int getBalance() 
-	{
-		return money.getBalance(); //////
-	}
-	
 }
