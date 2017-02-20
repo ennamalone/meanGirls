@@ -2,6 +2,7 @@ public class Player {
 
 	private int position;
 	private String name = new String();
+	private Money money = new Money();
 
 	Player (String userName) {
 
@@ -30,5 +31,11 @@ public class Player {
 	public int getPosition () {
 		return position;
 	}
+
+	public int getBalance()
+	{
+		return money.getBalance(); //////
+	}
+	
 
 }
