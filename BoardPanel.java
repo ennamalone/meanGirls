@@ -9,7 +9,7 @@ import java.awt.geom.*;
 import java.util.ArrayList;
 
 class BoardPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 750;    // must be even
 	private static final int FRAME_HEIGHT = 750;
@@ -17,17 +17,17 @@ class BoardPanel extends JPanel {
 	private static final Color[] PLAYER_COLORS = {Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.WHITE};
 	private static final float[] PLAYER_OFFSET = {0, 0.005f, 0.01f, 0.015f, 0.02f, 0.025f};
 	private static final float[][] CORNER_FROM = { {710, 730}, {5, 700}, {40,5}, {730, 40},};
-	private static final float[][] CORNER_TO = {{60, 730}, {5, 70}, {700,5}, {730, 700}}; // put players beside each other to not override each other 
-	
-	private ArrayList<Player> players;	
+	private static final float[][] CORNER_TO = {{60, 730}, {5, 70}, {700,5}, {730, 700}}; // put players beside each other to not override each other
+
+	private ArrayList<Player> players;
 	private BufferedImage boardImage;
-	
+
 	BoardPanel (ArrayList<Player> players) {
 		this.players = players;
 		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setBackground(Color.WHITE);
 		try {
-			boardImage = ImageIO.read(new File("C://Users//Cian//Desktop//board.jpg"));
+			boardImage = ImageIO.read(new File("board.jpg"));
 		} catch (IOException ex) {
 			System.out.println("Could not find the image file " + ex.toString());
 		}
@@ -55,11 +55,11 @@ class BoardPanel extends JPanel {
         }
 		return;
     }
-    
+
     public void refresh () {
 		revalidate();
 		repaint();
 		return;
     }
-    
+
 }

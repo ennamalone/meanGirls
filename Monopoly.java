@@ -17,6 +17,7 @@ public class Monopoly {
 	String command;
 	String pnums;
 	Money money = new Money();
+	int p = 0, z = 0;
 
 	Monopoly () {
 
@@ -45,9 +46,16 @@ public class Monopoly {
 
 		do
 		{
-			ui.displayString("\n" + "\n" +  players.get(0).getName());
+			ui.displayString("\n" + "\n" +  players.get(z).getName());
 			command = ui.getCommand();
 			ui.displayString(command);
+
+			if(command.equalsIgnoreCase("roll"))
+			{
+
+				DiceRoll();
+
+			}
 
 			if(command.equalsIgnoreCase("balance")) // works no matter what case is used when typing the word
 			{
@@ -76,7 +84,7 @@ public class Monopoly {
 				ui.displayString(validCommands);
 			}
 
-			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property"))
+			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property") || !command.equalsIgnoreCase("roll"))
 			{
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
@@ -111,7 +119,7 @@ public class Monopoly {
 
 		int rolls = 0;
 
-		if((ui.getCommand().toLowerCase().equals("roll"))&&(rolls<1))
+		if(rolls<1)
 		{
 			Random diceRoll = new Random();
 			int dice1;
@@ -131,20 +139,20 @@ public class Monopoly {
 			{
 
 				rolls--;
+				DiceRoll();
 
 			}
 
-			for (int p=0; p<playerIndex; p++) {
-				for (int i=0; i<diceTotal; i++) {
-					players.get(p).move(+1);
-					ui.display();
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						System.out.println("Sleep exeception.");
-					}
+			for (int i=0; i<diceTotal; i++) {
+				players.get(p).move(+1);
+				ui.display();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					System.out.println("Sleep exeception.");
 				}
 			}
+
 
 		}
 		else if((ui.getCommand().toLowerCase().equals("roll"))&&(rolls>1))
