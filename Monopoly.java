@@ -11,19 +11,34 @@ public class Monopoly {
 
 
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private ArrayList<String> players1 = new ArrayList<String>();
 	private UI ui = new UI(players);
 	int playerIndex = -1;
 	String temp = new String();
 	String command;
-	String pnums;
+	String pnums = "1500";
 	Money money = new Money();
+	
+	
+	public class link
+	{
+		String pnums;
+		ArrayList<Player> players;
+		ArrayList<String> players1;
+	}
 
 	Monopoly () {
 
 		for (int p=0; p < MAX_NUM_PLAYERS; p++) {
 
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-
+			players1.add(0, pnums);
+			players1.add(1, pnums);
+			players1.add(2, pnums);
+			players1.add(3, pnums);
+			players1.add(4, pnums);
+			players1.add(5, pnums);
+			
 			temp = ui.getCommand();
 
 			if(temp.toLowerCase().equals("done")){
@@ -36,7 +51,8 @@ public class Monopoly {
 			{
 
 				players.add(new Player(temp));
-				ui.displayString(players.get(p).getName() + " is player " + (p+1) + ".");
+				ui.displayString(players.get(p).getName() + " is player " + (p+1) + "."); // not working properly
+				ui.displayString("balance:" + players1.get(p));
 				playerIndex++;
 
 			}
