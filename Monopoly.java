@@ -44,54 +44,6 @@ public class Monopoly {
 
 		}
 
-		do
-		{
-			ui.displayString("\n" + "\n" +  players.get(z).getName());
-			command = ui.getCommand();
-			ui.displayString(command);
-
-			if(command.equalsIgnoreCase("roll"))
-			{
-
-				DiceRoll();
-
-			}
-
-			if(command.equalsIgnoreCase("balance")) // works no matter what case is used when typing the word
-			{
-				// calls new class money
-				String numberAsString = Integer.toString(money.getBalance());
-				ui.displayString(numberAsString);	// prints out 1500 in response to balance entered
-			}
-
-			if(command.equalsIgnoreCase("pay rent"))
-			{
-				// calls new class money
-				String numberAsString1 = Integer.toString(money.payRent());
-				ui.displayString(numberAsString1);
-			}
-
-			if(command.equalsIgnoreCase("buy"))
-			{
-				// calls new class money
-				String numberAsString2 = Integer.toString(money.buyProperty());
-				ui.displayString(numberAsString2);
-			}
-
-			if(command.equalsIgnoreCase("help"))
-			{
-				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
-				ui.displayString(validCommands);
-			}
-
-			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property") || !command.equalsIgnoreCase("roll"))
-			{
-				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
-				ui.displayString(errorMessage);
-			}
-		}
-		while (!command.equals("quit"));
-
 		ui.display();
 
 		return;
@@ -166,16 +118,57 @@ public class Monopoly {
 		return;
 	}
 
-	public void playerTurns(int i){
+	public void playerTurns(){
 
-		if(i == (players.size()-1)){
 
-			i = 0;
+		do
+		{
+			ui.displayString("\n" + "\n" +  players.get(z).getName());
+			command = ui.getCommand();
+			ui.displayString(command);
 
+			if(command.equalsIgnoreCase("roll"))
+			{
+
+				DiceRoll();
+
+			}
+
+			if(command.equalsIgnoreCase("balance")) // works no matter what case is used when typing the word
+			{
+				// calls new class money
+				String numberAsString = Integer.toString(money.getBalance());
+				ui.displayString(numberAsString);	// prints out 1500 in response to balance entered
+			}
+
+			if(command.equalsIgnoreCase("pay rent"))
+			{
+				// calls new class money
+				String numberAsString1 = Integer.toString(money.payRent());
+				ui.displayString(numberAsString1);
+			}
+
+			if(command.equalsIgnoreCase("buy"))
+			{
+				// calls new class money
+				String numberAsString2 = Integer.toString(money.buyProperty());
+				ui.displayString(numberAsString2);
+			}
+
+			if(command.equalsIgnoreCase("help"))
+			{
+				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
+				ui.displayString(validCommands);
+			}
+
+			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property") || !command.equalsIgnoreCase("roll"))
+			{
+				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
+				ui.displayString(errorMessage);
+			}
 		}
+		while (!command.equals("quit"));
 
-		i++;
-		playerTurns(i);
 
 		return;
 
