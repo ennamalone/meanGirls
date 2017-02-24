@@ -3,20 +3,36 @@ public class property
 	
 	//sets 2 array to be called consisting of name and the price of the property
 	
-	String[] playersProperty()
-	{
-		String player1[] = new String [40];
-		String player2[] = new String [40];
-		String player3[] = new String [40];
-		String player4[] = new String [40];
-		String player5[] = new String [40];
-		String player6[] = new String [40];
-		return player1; // need to return others 
+		String[] player1 = new String [6];
+		{
+			
+		}
+		String player2[] = new String [6];
+		{
+			
+		}
+		String player3[] = new String [6];
+		{
+			
+		}
+		String player4[] = new String [6];
+		{
+			
+		}
+		String player5[] = new String [6];
+		{
+			
+		}
+		String player6[] = new String [6];
+		{
+			
+		}
 		
-	}
-	String[] propertyname()
-	{
+		// need to return others 
+
+		
 		String prop[] = new String[40];
+		{
 		prop[0] = "Go square";
 		prop[1] = "Old Kent Road";
 		prop[2] = "Community Chect";
@@ -27,7 +43,7 @@ public class property
 		prop[7] = "Chance";
 		prop[8] = "Euston Road";
 		prop[9] = "Pentonville Road";
-		prop[10] = "Jail(jsut visiting)";
+		prop[10] = "Jail(just visiting)";
 		prop[11] = "Pall Mall";
 		prop[12] = "Electric Company";
 		prop[13] = "Whitehall";
@@ -57,13 +73,11 @@ public class property
 		prop[37] = "Park Lane";
 		prop[38] = "Super Tax";
 		prop[39] = "Mayfair";
-		return prop;
-		
-	}
+		}
 	
-	int[] property1()
-	{
+	
 		int proprice[] = new int[40];
+		{
 		proprice[0] = 200;
 		proprice[1] = 60;
 		proprice[2] = 0;
@@ -105,8 +119,8 @@ public class property
 		proprice[38] = 100;
 		proprice[39] = 400;
 		
-		return proprice;
-		
-	}
+
+		}	
+	
 	
 }

@@ -11,7 +11,6 @@ public class Monopoly {
 
 
 	private ArrayList<Player> players = new ArrayList<Player>();
-	//private ArrayList<Integer> players1 = new ArrayList<Integer>();
 	private UI ui = new UI(players);
 	int playerIndex = -1;
 	property properties = new property();
@@ -21,7 +20,7 @@ public class Monopoly {
 	
 
 	Player player = new Player(command);
-	int p = 0, z = 0;
+	int p = 0, z = 0, j = 0;
 	
 	void turn(){
 		for(Player element : players){
@@ -39,7 +38,7 @@ public class Monopoly {
 		for (int p=0; p < MAX_NUM_PLAYERS; p++) {
 
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-			ui.getCommand();
+			temp = ui.getCommand();
 
 			if(temp.toLowerCase().equals("done")){
 
@@ -147,8 +146,12 @@ public class Monopoly {
 		{
 			case "roll":
 				DiceRoll();
-				String nms = Integer.toString(e.getPosition());
-				ui.displayString("pos" + nms); // need to get position to track
+				ui.displayString(properties.prop[e.getPosition()]);
+				ui.displayString("price:" + properties.proprice[e.getPosition()]);
+				if(e.getPosition() == 0 || e.getPosition() == 1 || e.getPosition() == 2 || e.getPosition() == 3)
+				{
+					e.passGO();
+				}
 				
 				break;
 				
@@ -158,13 +161,25 @@ public class Monopoly {
 				break;
 				
 			case "pay rent":
-				String numberAsString1 = Integer.toString(e.payRent());
+				String numberAsString1 = Integer.toString((e.getBalance() - properties.proprice[e.getPosition()]));
 				ui.displayString(numberAsString1);
 				break;
 				
 			case "buy":
+				int i = 0;
 				String numberAsString2 = Integer.toString(e.buyProperty());
 				ui.displayString(numberAsString2);
+				/*while(i < properties.player1.length)
+				{
+					properties.player1[i] = properties.prop[e.getPosition()];
+					i++;
+				}
+			
+				while(j != properties.player1.length)
+				{
+					ui.displayString("Propeties owned are:" + "\n" + properties.player1[j]);
+					j++;
+				} */
 				break;
 	
 			case "help":
@@ -172,7 +187,7 @@ public class Monopoly {
 				ui.displayString(validCommands);
 				break;
 				
-			case "next":
+			case "done":
 				p = p + 1;
 				if(p == players.size())
 				{

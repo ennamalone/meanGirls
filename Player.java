@@ -4,6 +4,7 @@ public class Player { // moves player pieces around the board
 	private int position;
 	private int balance = 1500;
 	private String name = new String();
+	property properties = new property();
 	
 	
 
@@ -42,13 +43,19 @@ public class Player { // moves player pieces around the board
 	
 	public int buyProperty()
 	{
-		balance = balance - Monopoly.price;
+		balance = balance - properties.proprice[getPosition()];
 		return balance;
 	}
 	
 	public int payRent()
 	{
 		balance = balance - Monopoly.rent;
+		return balance;
+	}
+	
+	public int passGO()
+	{
+		balance = balance + 200;
 		return balance;
 	}
 
