@@ -1,8 +1,7 @@
-
 public class Money
 {
 	
-	private int balance;
+	public int balance;
 	
 	Money () 
 	{
@@ -17,11 +16,13 @@ public class Money
 	
 	public int buyProperty()
 	{
-		return balance - Monopoly.price;
+		balance = balance - Monopoly.price;
+		return balance;
 	}
 	
 	public int payRent()
 	{
-		return balance - Monopoly.rent;
+		balance = balance - Monopoly.rent;
+		return balance;
 	}
 }

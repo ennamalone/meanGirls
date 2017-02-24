@@ -3,7 +3,7 @@ public class Player { // moves player pieces around the board
 	
 	private int position;
 	private String name = new String();
-	private Money money = new Money();
+	
 	
 	Player (String userName) {
 		position = 0;
@@ -31,13 +31,5 @@ public class Player { // moves player pieces around the board
 	public int getPosition () 
 	{
 		return position;
-	}
-
-	public int getBalance() 
-	{
-		return money.getBalance(); //////
-	}
-
-	
-	
+	}	
 }

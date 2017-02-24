@@ -11,25 +11,35 @@ public class Monopoly {
 
 
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private ArrayList<Integer> players1 = new ArrayList<Integer>();
 	private UI ui = new UI(players);
 	int playerIndex = -1;
 	String temp = new String();
 	String command;
-	String pnums;
+	
 	Money money = new Money();
 	int p = 0, z = 0;
+
 
 	Monopoly () {
 
 		for (int p=0; p < MAX_NUM_PLAYERS; p++) {
 
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-
+			players1.add(0, money.getBalance());
+			players1.add(1, money.getBalance());
+			players1.add(2, money.getBalance());
+			players1.add(3, money.getBalance());
+			players1.add(4, money.getBalance());
+			players1.add(5, money.getBalance());
+			
 			temp = ui.getCommand();
 
 			if(temp.toLowerCase().equals("done")){
 
 				ui.displayString(temp);
+				whoFirst();
+				playerTurns();
 				break;
 
 			}
@@ -37,19 +47,19 @@ public class Monopoly {
 			{
 
 				players.add(new Player(temp));
-				ui.displayString(players.get(p).getName() + " is player " + (p+1) + ".");
+				ui.displayString(players.get(p).getName() + " is player " + (p+1) + "."); // not working properly
+				ui.displayString("balance:" + players1.get(p));
 				playerIndex++;
 
 			}
 
 		}
-
+		
 		ui.display();
-
 		return;
-
 	}
 
+		
 	public void whoFirst() {
 
 		int diceA, diceB;
@@ -95,19 +105,20 @@ public class Monopoly {
 
 			}
 
-			for (int i=0; i<diceTotal; i++) {
-				players.get(p).move(+1);
-				ui.display();
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					System.out.println("Sleep exeception.");
+			for (int i = 0; i<diceTotal;  i++) {
+				
+					players.get(p).move(+1);
+					ui.display();
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						System.out.println("Sleep exeception.");
+					}
 				}
-			}
-
+			
 
 		}
-		else if((ui.getCommand().toLowerCase().equals("roll"))&&(rolls>1))
+		else if(rolls==1)
 		{
 
 			ui.displayString("You cannot roll until your next turn.");
@@ -119,19 +130,16 @@ public class Monopoly {
 	}
 
 	public void playerTurns(){
-
-
+		
 		do
 		{
-			ui.displayString("\n" + "\n" +  players.get(z).getName());
+			ui.displayString("\n" + "\n" +  players.get(0).getName());
 			command = ui.getCommand();
 			ui.displayString(command);
-
+			
 			if(command.equalsIgnoreCase("roll"))
 			{
-
 				DiceRoll();
-
 			}
 
 			if(command.equalsIgnoreCase("balance")) // works no matter what case is used when typing the word
@@ -161,7 +169,7 @@ public class Monopoly {
 				ui.displayString(validCommands);
 			}
 
-			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property") || !command.equalsIgnoreCase("roll"))
+			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property"))
 			{
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
@@ -169,10 +177,12 @@ public class Monopoly {
 		}
 		while (!command.equals("quit"));
 
-
 		return;
 
+
 	}
+
+
 
 	public static void main (String args[]) {
 		Monopoly game = new Monopoly();

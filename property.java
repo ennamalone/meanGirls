@@ -2,6 +2,18 @@ public class property
 {
 	
 	//sets 2 array to be called consisting of name and the price of the property
+	
+	String[] playersProperty()
+	{
+		String player1[] = new String [40];
+		String player2[] = new String [40];
+		String player3[] = new String [40];
+		String player4[] = new String [40];
+		String player5[] = new String [40];
+		String player6[] = new String [40];
+		return player1; // need to return others 
+		
+	}
 	String[] propertyname()
 	{
 		String prop[] = new String[40];
