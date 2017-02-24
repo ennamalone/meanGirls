@@ -8,7 +8,7 @@ public class UI {
 	private static final int FRAME_WIDTH = 1200;
 	private static final int FRAME_HEIGHT = 800;
 	
-	private JFrame frame = new JFrame();
+	JFrame frame = new JFrame();
 	private BoardPanel boardPanel;	
 	private InfoPanel infoPanel = new InfoPanel();
 	private CommandPanel commandPanel = new CommandPanel();

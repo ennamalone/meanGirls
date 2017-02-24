@@ -11,14 +11,27 @@ public class Monopoly {
 
 
 	private ArrayList<Player> players = new ArrayList<Player>();
-	private ArrayList<Integer> players1 = new ArrayList<Integer>();
+	//private ArrayList<Integer> players1 = new ArrayList<Integer>();
 	private UI ui = new UI(players);
 	int playerIndex = -1;
+	property properties = new property();
 	String temp = new String();
 	String command;
+	private Boolean cond;
 	
-	Money money = new Money();
+
+	Player player = new Player(command);
 	int p = 0, z = 0;
+	
+	void turn(){
+		for(Player element : players){
+			cond = true;
+			playerTurns(element);
+			
+
+		}
+		turn();
+	}
 
 
 	Monopoly () {
@@ -26,20 +39,13 @@ public class Monopoly {
 		for (int p=0; p < MAX_NUM_PLAYERS; p++) {
 
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-			players1.add(0, money.getBalance()); // obvious 
-			players1.add(1, money.getBalance1());
-			players1.add(2, money.getBalance2()); // need to get seperate accounts for each
-			players1.add(3, money.getBalance3());
-			players1.add(4, money.getBalance4());
-			players1.add(5, money.getBalance5());
-			
-			temp = ui.getCommand();
+			ui.getCommand();
 
 			if(temp.toLowerCase().equals("done")){
 
 				ui.displayString(temp);
 				whoFirst();
-				playerTurns();
+				turn();
 				break;
 
 			}
@@ -48,7 +54,7 @@ public class Monopoly {
 
 				players.add(new Player(temp));
 				ui.displayString(players.get(p).getName() + " is player " + (p+1) + "."); // not working properly
-				ui.displayString("balance:" + players1.get(p));
+				ui.displayString("balance:" + players.get(p).getBalance());
 				playerIndex++;
 
 			}
@@ -129,70 +135,67 @@ public class Monopoly {
 		return;
 	}
 
-	public void playerTurns(){
+	public void playerTurns(Player e){
 		
-		do
+		
+	while(cond)
+	{
+		ui.displayString("\n" +  e.getName());
+		 
+		
+		switch (ui.getCommand().toLowerCase())
 		{
-			ui.displayString("\n" + "\n" +  players.get(0).getName());
-			command = ui.getCommand();
-			ui.displayString(command);
-			
-			if(command.equalsIgnoreCase("roll"))
-			{
+			case "roll":
 				DiceRoll();
-			}
-
-			if(command.equalsIgnoreCase("balance")) // works no matter what case is used when typing the word
-			{
-				// calls new class money
-				String numberAsString = Integer.toString(money.getBalance());
+				String nms = Integer.toString(e.getPosition());
+				ui.displayString("pos" + nms); // need to get position to track
+				
+				break;
+				
+			case "balance":
+				String numberAsString = Integer.toString(e.getBalance());
 				ui.displayString(numberAsString);	// prints out 1500 in response to balance entered
-			}
-
-			if(command.equalsIgnoreCase("pay rent"))
-			{
-				// calls new class money
-				String numberAsString1 = Integer.toString(money.payRent());
+				break;
+				
+			case "pay rent":
+				String numberAsString1 = Integer.toString(e.payRent());
 				ui.displayString(numberAsString1);
-			}
-
-			if(command.equalsIgnoreCase("buy"))
-			{
-				// calls new class money
-				String numberAsString2 = Integer.toString(money.buyProperty());
+				break;
+				
+			case "buy":
+				String numberAsString2 = Integer.toString(e.buyProperty());
 				ui.displayString(numberAsString2);
-			}
-
-			if(command.equalsIgnoreCase("help"))
-			{
-				String validCommands = ">>>>> Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
+				break;
+	
+			case "help":
+				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(validCommands);
-			}
-			if(command.equalsIgnoreCase("done"))
-			{
+				break;
+				
+			case "next":
 				p = p + 1;
 				if(p == players.size())
 				{
 					p = 0;	
 				}
 				players.get(p).move(+1);
-				ui.display();
+			//	ui.display(Player.);
 				
 				try {
 					Thread.sleep(500);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException a) {
 					System.out.println("Sleep exeception.");
 				}
-			}
-
-			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property"))
-			{
+				cond = false;
+				break;
+				
+			default:
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
-			}
+				
+			
 		}
-		while (!command.equals("quit"));
-
+}		
 		return;
 
 
