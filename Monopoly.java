@@ -26,12 +26,12 @@ public class Monopoly {
 		for (int p=0; p < MAX_NUM_PLAYERS; p++) {
 
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-			players1.add(0, money.getBalance());
-			players1.add(1, money.getBalance());
-			players1.add(2, money.getBalance());
-			players1.add(3, money.getBalance());
-			players1.add(4, money.getBalance());
-			players1.add(5, money.getBalance());
+			players1.add(0, money.getBalance()); // obvious 
+			players1.add(1, money.getBalance1());
+			players1.add(2, money.getBalance2()); // need to get seperate accounts for each
+			players1.add(3, money.getBalance3());
+			players1.add(4, money.getBalance4());
+			players1.add(5, money.getBalance5());
 			
 			temp = ui.getCommand();
 
@@ -118,11 +118,11 @@ public class Monopoly {
 			
 
 		}
-		else if(rolls==1)
+		else if(rolls>=1)
 		{
 
 			ui.displayString("You cannot roll until your next turn.");
-
+			return;
 
 		}
 
@@ -165,8 +165,24 @@ public class Monopoly {
 
 			if(command.equalsIgnoreCase("help"))
 			{
-				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
+				String validCommands = ">>>>> Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(validCommands);
+			}
+			if(command.equalsIgnoreCase("done"))
+			{
+				p = p + 1;
+				if(p == players.size())
+				{
+					p = 0;	
+				}
+				players.get(p).move(+1);
+				ui.display();
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					System.out.println("Sleep exeception.");
+				}
 			}
 
 			if(!command.equalsIgnoreCase("help") || !command.equalsIgnoreCase("buy") || !command.equalsIgnoreCase("pay rent") || !command.equalsIgnoreCase("balance") || !command.equalsIgnoreCase("roll") || !command.equalsIgnoreCase("property"))

@@ -13,6 +13,26 @@ public class Money
 	{
 		return balance;
 	}
+	public int getBalance1 () 
+	{
+		return balance;
+	}
+	public int getBalance2 () 
+	{
+		return balance;
+	}
+	public int getBalance3 () 
+	{
+		return balance;
+	}
+	public int getBalance4 () 
+	{
+		return balance;
+	}
+	public int getBalance5 () 
+	{
+		return balance;
+	}
 	
 	public int buyProperty()
 	{

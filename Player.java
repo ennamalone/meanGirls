@@ -3,6 +3,8 @@ public class Player { // moves player pieces around the board
 	
 	private int position;
 	private String name = new String();
+	Money money = new Money();
+	
 	
 	
 	Player (String userName) {
