@@ -136,7 +136,7 @@ public class Monopoly {
 	public void playerTurns(Player e){ // 
 		
 		
-	while(condition) // the boolean conditions is true will execute player turns and ensuing switch statments
+	while(condition) // the boolean conditions is true will execute player turns and ensuing switch statements
 	{
 		ui.displayString("\n" +  e.getName());
 		 
@@ -167,7 +167,7 @@ public class Monopoly {
 				 
 				String numberAsString2 = Integer.toString(e.buyProperty()); // calls buyProperty function player class
 				ui.displayString(numberAsString2);
-				player.player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
+				players.get(p).player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
 				i++;
 				k++;
 				break; 
@@ -182,7 +182,7 @@ public class Monopoly {
 				ui.displayString("Properties owned are:" + "\n");
 				while(j != k)
 				{
-					ui.displayString(player.player1[j]); // calls player1 array form player class
+					ui.displayString(players.get(p).player1[j]); // calls player1 array form player class
 					j++;
 				}
 				break;
@@ -193,7 +193,7 @@ public class Monopoly {
 				{
 					p = 0;	
 				}
-				players.get(p).move(+1);
+				players.get(p).move(0);
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException a) {
