@@ -67,7 +67,7 @@ public class Player { // moves player pieces around the board
 			{
 				
 			}
-			String[] player2 = new String [20];
+			int[] player2 = new int [20];
 			{
 				
 			}

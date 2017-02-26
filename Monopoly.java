@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 public class Monopoly {
 
 
@@ -21,6 +23,9 @@ public class Monopoly {
 	Player player = new Player(command);
 	int p = 0, z = 0, i = 0, k = 0;
 	int rolls = 0;
+	int dice1;
+	int dice2;
+	int diceTotal;
 	
 	
 	void turn(){
@@ -83,14 +88,14 @@ public class Monopoly {
 
 	}
 
-	private void DiceRoll () {
+	private void DiceRoll () 
+	{
+		Random diceRoll = new Random();
+		
 
 		if(rolls<1)
 		{
-			Random diceRoll = new Random();
-			int dice1;
-			int dice2;
-			int diceTotal;
+			
 
 
 			dice1 = 1 + diceRoll.nextInt(6); // dice roll random between 1-6
@@ -101,13 +106,7 @@ public class Monopoly {
 			diceTotal = dice1 + dice2;
 			rolls++;
 
-			if(dice1 == dice2)
-			{
-
-				rolls--;
-				DiceRoll();
-
-			} // counts the number of dice roll so user can only have one rolls if doubled is not rolled
+		 // counts the number of dice roll so user can only have one rolls if doubled is not rolled
 
 			for (int i = 0; i<diceTotal;  i++) {
 				
@@ -127,6 +126,14 @@ public class Monopoly {
 
 			ui.displayString("You cannot roll until your next turn.");
 			return;
+
+		}
+		if(dice1 == dice2)
+		{
+
+			rolls--;
+			playerTurns(player);
+			DiceRoll();
 
 		}
 
@@ -168,6 +175,7 @@ public class Monopoly {
 				String numberAsString2 = Integer.toString(e.buyProperty()); // calls buyProperty function player class
 				ui.displayString(numberAsString2);
 				players.get(p).player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
+				players.get(p).player2[i] = player.proprice[e.getPosition()];
 				i++;
 				k++;
 				break; 
@@ -203,6 +211,31 @@ public class Monopoly {
 				condition = false; // breaks boolean statement so switch statements can start again
 				break;
 				
+			case "quit":
+				
+				
+				for(int p = 0; p < players.size(); p++)
+				{
+						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
+						// gets the sum of the value of each players property
+						
+						
+							int temp1 = players.get(p).getBalance() + temp;
+							String tempA = players.get(p).getName();
+							int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
+							// get total of players assets and their balance 
+							String tempB = players.get(p+1).getName(); // get players name associated with assets total
+							if (temp1 < temp2)
+							{
+								temp1 = temp2; // compares to find largest 
+								tempA = tempB;
+							}
+						
+						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 			
+				}
+				
+				System.exit(0);
+				
 			default: // case if a command is entered that is not recognised
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
@@ -215,6 +248,12 @@ public class Monopoly {
 
 	}
 
+
+
+	private Object p(int j) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 	public static void main (String args[]) {
