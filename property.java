@@ -1,3 +1,7 @@
+// Énna Malone 15357146
+// Brian Finlay 15381151
+// Cian Kelly 15386256
+
 public class property
 {
 	//sets 2 array to be called consisting of name and the price of the property
