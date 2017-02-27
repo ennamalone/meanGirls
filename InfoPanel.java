@@ -2,8 +2,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 
-public class InfoPanel extends JPanel {
-	
+public class InfoPanel extends JPanel
+{	
 	private static final long serialVersionUID = 1L;
 	private static final int TEXT_AREA_HEIGHT = 40;
 	private static final int CHARACTER_WIDTH = 39;
@@ -12,8 +12,9 @@ public class InfoPanel extends JPanel {
 	JTextArea textArea = new JTextArea(TEXT_AREA_HEIGHT, CHARACTER_WIDTH);
 	JScrollPane scrollPane = new JScrollPane(textArea);
 	DefaultCaret caret = (DefaultCaret)textArea.getCaret();
-	
-	InfoPanel () {
+
+	InfoPanel()
+	{
 		textArea.setEditable(false);
 		textArea.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
 		textArea.setLineWrap(true);
@@ -24,14 +25,17 @@ public class InfoPanel extends JPanel {
 		add(scrollPane, BorderLayout.CENTER);
 		return;
 	}
-	
-	public void addText (String text) {
+
+	public void addText(String text)
+	{
 		textArea.setText(textArea.getText()+"\n"+text);
 	}
-	public void refresh () {
+
+	public void refresh()
+	{
 		revalidate();
 		repaint();
 		return;
-    }
+	}
 
 }
