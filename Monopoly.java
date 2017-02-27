@@ -168,6 +168,28 @@ public class Monopoly {
 			case "pay rent":
 				String numberAsString1 = Integer.toString(e.payRent()); // calls pay Rent function from player class
 				ui.displayString(numberAsString1);
+				if(e.getBalance() <= 0)
+				{
+					for(int p = 0; p < players.size(); p++)
+					{
+							int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
+							// gets the sum of the value of each players property
+							
+							
+								int temp1 = players.get(p).getBalance() + temp;
+								String tempA = players.get(p).getName();
+								int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
+								// get total of players assets and their balance 
+								String tempB = players.get(p+1).getName(); // get players name associated with assets total
+								if (temp1 < temp2)
+								{
+									temp1 = temp2; // compares to find largest 
+									tempA = tempB;
+								}
+							
+							JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 	
+				}
+				}
 				break;
 				
 			case "buy":
@@ -178,6 +200,28 @@ public class Monopoly {
 				players.get(p).player2[i] = player.proprice[e.getPosition()];
 				i++;
 				k++;
+				if(e.getBalance() <= 0)
+				{
+					for(int p = 0; p < players.size(); p++)
+					{
+							int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
+							// gets the sum of the value of each players property
+							
+							
+								int temp1 = players.get(p).getBalance() + temp;
+								String tempA = players.get(p).getName();
+								int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
+								// get total of players assets and their balance 
+								String tempB = players.get(p+1).getName(); // get players name associated with assets total
+								if (temp1 < temp2)
+								{
+									temp1 = temp2; // compares to find largest 
+									tempA = tempB;
+								}
+							
+							JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 	
+				}
+				}
 				break; 
 	
 			case "help": // if player requires help remembering commands 
@@ -247,15 +291,6 @@ public class Monopoly {
 
 
 	}
-
-
-
-	private Object p(int j) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	public static void main (String args[]) {
 		Monopoly game = new Monopoly(); // launches the game
 		return;

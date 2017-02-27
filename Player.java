@@ -58,6 +58,8 @@ public class Player { // moves player pieces around the board
 		balance = balance + 200;
 		return balance;
 	}
+	
+	
 
 	
 		
