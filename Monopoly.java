@@ -280,12 +280,10 @@ public class Monopoly
 						tempA = tempB;
 					}
 
-					JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 			
+					JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
+					ui.frame.dispose();
 				}
 				
-				ui.frame.dispose();
-				System.exit(0);
-
 			default: // case if a command is entered that is not recognised
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
