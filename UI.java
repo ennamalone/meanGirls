@@ -1,24 +1,19 @@
-// Énna Malone 15357146
-// Brian Finlay 15381151
-// Cian Kelly 15386256
-
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 import java.util.ArrayList; // creates the panel on which board/ info is displayed
 
-public class UI
-{
-	private static final int FRAME_WIDTH = 1200;
-	private static final int FRAME_HEIGHT = 700;
+public class UI {
 
+	private static final int FRAME_WIDTH = 1200;
+	private static final int FRAME_HEIGHT = 800;
+	
 	JFrame frame = new JFrame();
-	private BoardPanel boardPanel;
+	private BoardPanel boardPanel;	
 	private InfoPanel infoPanel = new InfoPanel();
 	private CommandPanel commandPanel = new CommandPanel();
-
-	UI (ArrayList<Player> players)
-	{
+	
+	UI (ArrayList<Player> players) {
 		boardPanel = new BoardPanel(players);
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setTitle("Monopoly");
@@ -30,21 +25,19 @@ public class UI
 		frame.setVisible(true);
 		return;
 	}
-
-	public String getCommand()
-	{
+	
+	public String getCommand () {
 		return commandPanel.getCommand();
 	}
-
-	public void display()
-	{
+	
+	public void display () {
 		boardPanel.refresh();
 		return;
 	}
-
-	public void displayString(String string)
-	{
+	
+	public void displayString (String string) {
 		infoPanel.addText(string);
 		return;
 	}
+	
 }

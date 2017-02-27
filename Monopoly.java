@@ -2,6 +2,8 @@
 // Brian Finlay 15381151
 // Cian Kelly 15386256
 
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -268,25 +270,31 @@ public class Monopoly
 				break;
 
 			case "quit":
-				for(int p = 0; p < players.size(); p++)
-				{
-					int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
-					// gets the sum of the value of each players property
-
-					int temp1 = players.get(p).getBalance() + temp;
-					String tempA = players.get(p).getName();
-					int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-					// get total of players assets and their balance 
-					String tempB = players.get(p+1).getName(); // get players name associated with assets total
-					if (temp1 < temp2)
+				try{
+					for(int p = 0; p < players.size(); p++)
 					{
-						temp1 = temp2; // compares to find largest 
-						tempA = tempB;
+						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
+						// gets the sum of the value of each players property
+	
+						int temp1 = players.get(p).getBalance() + temp;
+						String tempA = players.get(p).getName();
+						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
+						// get total of players assets and their balance 
+						String tempB = players.get(p+1).getName(); // get players name associated with assets total
+						if (temp1 < temp2)
+						{
+							temp1 = temp2; // compares to find largest 
+							tempA = tempB;
+						}
+	
+						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
+						ui.frame.dispose();
+					} 
+					}	catch (IndexOutOfBoundsException d)
+					{
+						System.out.println("Out of bounds");
 					}
-
-					JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
-					ui.frame.dispose();
-				}
+				
 				
 			default: // case if a command is entered that is not recognised
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
