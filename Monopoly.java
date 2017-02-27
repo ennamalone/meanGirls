@@ -54,7 +54,7 @@ public class Monopoly
 
 				players.add(new Player(temp));
 				ui.displayString(players.get(p).getName() + " is player " + (p+1) + "."); // players name is displayed
-				ui.displayString("balance:" + players.get(p).getBalance()); // players balance is displayed
+				ui.displayString("Balance:" + players.get(p).getBalance()); // players balance is displayed
 				playerIndex++;
 			}
 		}
@@ -282,7 +282,8 @@ public class Monopoly
 
 					JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 			
 				}
-
+				
+				ui.frame.dispose();
 				System.exit(0);
 
 			default: // case if a command is entered that is not recognised
