@@ -1,8 +1,6 @@
-// Énna Malone 15357146
+// Ã‰nna Malone 15357146
 // Brian Finlay 15381151
 // Cian Kelly 15386256
-
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +19,7 @@ public class Monopoly
 	int playerIndex;
 	String temp = new String();
 	String command;
+	String echo;
 	private Boolean condition;
 
 	Player player = new Player(command);
@@ -29,6 +28,7 @@ public class Monopoly
 	int dice1;
 	int dice2;
 	int diceTotal;
+	boolean canBuy;
 
 	void turn()
 	{
@@ -37,13 +37,13 @@ public class Monopoly
 			condition = true; // sets boolean
 			playerTurns(element);// calls playerTurns function
 		}
-		
+
 		turn();
 	}
 
 	Monopoly()
 	{
-		for (int p=0; p < MAX_NUM_PLAYERS; p++) 
+		for (int p=0; p < MAX_NUM_PLAYERS; p++)
 		{ // gets players names and assigns a balance to each
 			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
 			temp = ui.getCommand();
@@ -85,7 +85,7 @@ public class Monopoly
 			ui.displayString("\nRolling the dice to see who goes first:");
 
 			for(a = 0; a < players.size(); a++) // Runs for however many names have been entered
-			{				
+			{
 				diceA = 1 + (int)(Math.random() * 6.0); // dice roll random between 1-6
 				diceB = 1 + (int)(Math.random() * 6.0); // dice roll random between 1-6
 
@@ -112,8 +112,8 @@ public class Monopoly
 		Collections.swap(players, 0, playerOrder); // Swapping the highest roller with player 1 so that the highest roller starts
 
 	}
-	
-	private void DiceRoll() 
+
+	private void DiceRoll()
 	{
 		Random diceRoll = new Random();
 
@@ -122,7 +122,7 @@ public class Monopoly
 			dice1 = 1 + diceRoll.nextInt(6); // dice roll random between 1-6
 			dice2 = 1 + diceRoll.nextInt(6); // dice roll random between 1-6
 
-			ui.displayString("Your rolled dice are " + dice1 + " and " + dice2 + ".");
+			ui.displayString("Your rolled dice are " + dice1 + " and " + dice2 + ".\n");
 
 			diceTotal = dice1 + dice2;
 			rolls++;
@@ -142,7 +142,7 @@ public class Monopoly
 				}
 			}
 		}
-		else if(rolls >= 1) // case if player has already rolled this turn 
+		else if(rolls >= 1) // case if player has already rolled this turn
 		{
 			ui.displayString("You cannot roll until your next turn.");
 			return;
@@ -158,21 +158,25 @@ public class Monopoly
 	}
 
 	public void playerTurns(Player e)
-	{ 
+	{
 		while(condition) // the boolean conditions is true will execute player turns and ensuing switch statements
 		{
-			ui.displayString("\n" +  e.getName());
+			ui.displayString("\n" +  e.getName() + "\n");
 
-			switch (ui.getCommand().toLowerCase())
+			echo = ui.getCommand();
+
+			ui.displayString("> " +  echo + "\n");
+
+			switch (echo.toLowerCase())
 			{
 			case "roll": // rolls random dice to move players gamepiece
 				DiceRoll();
-				ui.displayString(player.prop[e.getPosition()]); // displays the name of property landed on by calling getPosition from player class 
+				ui.displayString(player.prop[e.getPosition()]); // displays the name of property landed on by calling getPosition from player class
 				ui.displayString("price:" + player.proprice[e.getPosition()]); // displays said properties price
 				if(e.getPosition() == 0 || e.getPosition() == 1 || e.getPosition() == 2 || e.getPosition() == 3)
 				{
-					e.passGO(); // adds 200 to the players bank account as they pass go 
-				} 
+					e.passGO(); // adds 200 to the players bank account as they pass go
+				}
 				break;
 
 			case "balance": // displays current players balance
@@ -194,26 +198,44 @@ public class Monopoly
 						int temp1 = players.get(p).getBalance() + temp;
 						String tempA = players.get(p).getName();
 						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance 
+						// get total of players assets and their balance
 						String tempB = players.get(p+1).getName(); // get players name associated with assets total
 						if (temp1 < temp2)
 						{
-							temp1 = temp2; // compares to find largest 
+							temp1 = temp2; // compares to find largest
 							tempA = tempB;
 						}
 
-						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 	
+						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
 					}
 				}
 				break;
 
 			case "buy":
-				String numberAsString2 = Integer.toString(e.buyProperty()); // calls buyProperty function player class
-				ui.displayString(numberAsString2);
-				players.get(p).player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
-				players.get(p).player2[i] = player.proprice[e.getPosition()];
-				i++;
-				k++;
+				canBuy = true;
+				for(int q = 0; q < players.size(); q++)
+				{
+					for(int r = 0; r < 40; r++)
+					{
+						if(player.prop[e.getPosition()].equals(players.get(q).player1[r]))
+						{
+							ui.displayString("This property is already owned, you cannot buy it.");
+							canBuy = false;
+							break;
+						}
+					}
+				}
+
+				if(canBuy)
+				{
+					String numberAsString2 = Integer.toString(e.buyProperty()); // calls buyProperty function player class
+					ui.displayString(numberAsString2);
+					players.get(p).player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
+					players.get(p).player2[i] = player.proprice[e.getPosition()];
+					i++;
+					k++;
+				}
+
 				if(e.getBalance() <= 0)
 				{
 					for(int p = 0; p < players.size(); p++)
@@ -224,25 +246,25 @@ public class Monopoly
 						int temp1 = players.get(p).getBalance() + temp;
 						String tempA = players.get(p).getName();
 						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance 
+						// get total of players assets and their balance
 						String tempB = players.get(p+1).getName(); // get players name associated with assets total
 						if (temp1 < temp2)
 						{
-							temp1 = temp2; // compares to find largest 
+							temp1 = temp2; // compares to find largest
 							tempA = tempB;
 						}
-
-						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1); 	
+						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
+						}
 					}
-				}
-				break; 
+					break;
 
-			case "help": // if player requires help remembering commands 
+
+			case "help": // if player requires help remembering commands
 				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(validCommands);
 				break;
 
-			case "property": // gives players list of properties that are owned 
+			case "property": // gives players list of properties that are owned
 				int j = 0;
 				ui.displayString("Properties owned are:" + "\n");
 				while(j != k)
@@ -256,7 +278,7 @@ public class Monopoly
 				p = p + 1;
 				if(p == players.size()) // allows player to end turn so next player can begin their turn
 				{
-					p = 0;	
+					p = 0;
 				}
 				players.get(p).move(0);
 				try {
@@ -275,32 +297,32 @@ public class Monopoly
 					{
 						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
 						// gets the sum of the value of each players property
-	
+
 						int temp1 = players.get(p).getBalance() + temp;
 						String tempA = players.get(p).getName();
 						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance 
+						// get total of players assets and their balance
 						String tempB = players.get(p+1).getName(); // get players name associated with assets total
 						if (temp1 < temp2)
 						{
-							temp1 = temp2; // compares to find largest 
+							temp1 = temp2; // compares to find largest
 							tempA = tempB;
 						}
-	
+
 						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
 						ui.frame.dispose();
-					} 
+					}
 					}	catch (IndexOutOfBoundsException d)
 					{
 						System.out.println("Out of bounds");
 					}
-				
-				
+
+
 			default: // case if a command is entered that is not recognised
 				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
 				ui.displayString(errorMessage);
 			}
-		}		
+		}
 		return;
 	}
 	public static void main (String args[])
