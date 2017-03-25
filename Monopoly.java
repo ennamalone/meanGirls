@@ -1,333 +1,1130 @@
-// Énna Malone 15357146
-// Brian Finlay 15381151
-// Cian Kelly 15386256
+// need to fix the player colours but will work for now 
+
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
-import javax.swing.JOptionPane;
+public class Monopoly {
 
-public class Monopoly
-{
-	public static final int NUM_SQUARES = 40;
 	public static final int MAX_NUM_PLAYERS = 6;
-	public static final int rent = 16;
-
+	private static final int START_MONEY = 1500;
+	private static final int GO_MONEY = 200;
+	
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private Player currPlayer;
 	private UI ui = new UI(players);
-	int playerIndex;
-	String temp = new String();
-	String command;
-	String echo;
-	private Boolean condition;
-
-	Player player = new Player(command);
-	int p = 0, z = 0, i = 0, k = 0;
-	int rolls = 0;
-	int dice1;
-	int dice2;
-	int diceTotal;
-	boolean canBuy;
-
-	void turn()
-	{
-		for(Player element : players)
-		{ // allows each arraylist element to be accessed independently
-			condition = true; // sets boolean
-			playerTurns(element);// calls playerTurns function
-		}
-
-		turn();
+	private int numPlayers;
+	private Dice dice = new Dice();
+	private boolean gameOver = false;
+	private Board board = new Board();
+	
+	Monopoly () {
+		numPlayers = 0;
+		ui.display();
+		return;
 	}
-
-	Monopoly()
-	{
-		for (int p=0; p < MAX_NUM_PLAYERS; p++)
-		{ // gets players names and assigns a balance to each
-			ui.displayString("Please enter the player name for player " + (p+1) + ", or to finish enter done.");
-			temp = ui.getCommand();
-
-			if(temp.toLowerCase().equals("done"))
-			{
-				ui.displayString(temp);
-				whoFirst();
-				turn();
-				break;
+	
+	public void inputNames () {
+		do {
+			ui.inputName(numPlayers);
+			if (!ui.isDone()) {
+				players.add(new Player(ui.getString(),ui.getTokenName(numPlayers)));
+				numPlayers++;
 			}
-			else
-			{
-
-				players.add(new Player(temp));
-				ui.displayString(players.get(p).getName() + " is player " + (p+1) + "."); // players name is displayed
-				ui.displayString("Balance:" + players.get(p).getBalance()); // players balance is displayed
-				playerIndex++;
-			}
+		} while (!ui.isDone() && numPlayers!=MAX_NUM_PLAYERS);
+		return;
+	}
+	
+	public void giveStartMoney () {
+		for (Player p : players) {
+			p.doTransaction (START_MONEY);
+			ui.displayBankTransaction (p);
 		}
-
+		return;
+	}
+	
+	public void decideStarter () {
+		ArrayList<Player> inPlayers = new ArrayList<Player>(players), 
+				selectedPlayers = new ArrayList<Player>();
+		boolean tie = false;
+		do {
+			int highestTotal = 0;
+			for (Player p : inPlayers) {
+				dice.roll();
+				ui.displayDice(p,dice);
+				if (dice.getTotal() > highestTotal) {
+					tie = false;
+					highestTotal = dice.getTotal();
+					selectedPlayers.clear();
+					selectedPlayers.add(p);
+				} else if (dice.getTotal() == highestTotal) {
+					tie = true;
+					selectedPlayers.add(p);
+				}
+			}
+			if (tie) {
+				ui.displayRollDraw();
+				inPlayers = new ArrayList<Player>(selectedPlayers);
+				selectedPlayers.clear();
+			}
+		} while (tie);
+		currPlayer = selectedPlayers.get(0);
+		ui.displayRollWinner(currPlayer);
 		ui.display();
 		return;
 	}
 
-	public void whoFirst()
-	{ // function to decide who goes first based on highest dice roll
-
-		int diceA = 0, diceB = 0, a = 0, temp = 0, playerOrder = 0;
-		int resArr[] = new int[players.size() + 1];
-		int RollFirst;
-
-		if(players.size() < 2) // If there are less than 2 players
-		{
-			ui.displayString("\nYou need more players to play!");
-		}
-		else
-		{
-			ui.displayString("\nRolling the dice to see who goes first:");
-
-			for(a = 0; a < players.size(); a++) // Runs for however many names have been entered
-			{
-				diceA = 1 + (int)(Math.random() * 6.0); // dice roll random between 1-6
-				diceB = 1 + (int)(Math.random() * 6.0); // dice roll random between 1-6
-
-				RollFirst = diceA + diceB; // Finding the total of the two die
-
-				resArr[a] = diceA + diceB;
-
-				ui.displayString(players.get(a).getName() + " rolled " + RollFirst);
-			}
-
-			for(a = 0; a < players.size(); a++)
-			{
-				if(resArr[a] > temp) // Storing the largest number
-				{
-					temp = resArr[a];
-					playerOrder = a; // The location of the highest roller in the players list
-				}
-			}
-
-			String test = players.get(playerOrder).getName() + " rolled the highest number, " + temp + " and will play first!";
-			ui.displayString(test);
-		}
-
-		Collections.swap(players, 0, playerOrder); // Swapping the highest roller with player 1 so that the highest roller starts
-
-	}
-
-	private void DiceRoll()
-	{
-		Random diceRoll = new Random();
-
-		if(rolls < 1)
-		{
-			dice1 = 1 + diceRoll.nextInt(6); // dice roll random between 1-6
-			dice2 = 1 + diceRoll.nextInt(6); // dice roll random between 1-6
-
-			ui.displayString("Your rolled dice are " + dice1 + " and " + dice2 + ".\n");
-
-			diceTotal = dice1 + dice2;
-			rolls++;
-
-			// counts the number of dice roll so user can only have one rolls if doubled is not rolled
-
-			for (int i = 0; i < diceTotal;  i++)
-			{
-				players.get(p).move(+1);
-				ui.display();
-				try
-				{
-					Thread.sleep(500);
-				} catch (InterruptedException e)
-				{
-					System.out.println("Sleep exeception.");
-				}
-			}
-		}
-		else if(rolls >= 1) // case if player has already rolled this turn
-		{
-			ui.displayString("You cannot roll until your next turn.");
-			return;
-		}
-		if(dice1 == dice2)
-		{
-			rolls--;
-			playerTurns(player);
-			DiceRoll();
-		}
-
-		return;
-	}
-
-	public void playerTurns(Player e)
-	{
-		while(condition) // the boolean conditions is true will execute player turns and ensuing switch statements
-		{
-			ui.displayString("\n" +  e.getName() + "\n");
-
-			echo = ui.getCommand();
-
-			ui.displayString("> " +  echo + "\n");
-
-			switch (echo.toLowerCase())
-			{
-			case "roll": // rolls random dice to move players gamepiece
-				DiceRoll();
-				ui.displayString(player.prop[e.getPosition()]); // displays the name of property landed on by calling getPosition from player class
-				ui.displayString("price:" + player.proprice[e.getPosition()]); // displays said properties price
-				if(e.getPosition() == 0 || e.getPosition() == 1 || e.getPosition() == 2 || e.getPosition() == 3)
-				{
-					e.passGO(); // adds 200 to the players bank account as they pass go
-				}
-				break;
-
-			case "balance": // displays current players balance
-				String numberAsString = Integer.toString(e.getBalance()); // calls getBalance function from players class
-				ui.displayString(numberAsString);	// calls balance function form player class
-				break;
-
-			case "pay rent":
-				String numberAsString1 = Integer.toString(e.payRent()); // calls pay Rent function from player class
-				ui.displayString(numberAsString1);
-				if(e.getBalance() <= 0)
-				{
-					for(int p = 0; p < players.size(); p++)
-					{
-						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
-						// gets the sum of the value of each players property
-
-
-						int temp1 = players.get(p).getBalance() + temp;
-						String tempA = players.get(p).getName();
-						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance
-						String tempB = players.get(p+1).getName(); // get players name associated with assets total
-						if (temp1 < temp2)
-						{
-							temp1 = temp2; // compares to find largest
-							tempA = tempB;
+	public void processTurn () {
+		boolean turnFinished = false;
+		boolean rollDone = false;
+		boolean rentOwed = false;
+		boolean rentPaid = false;
+		do {
+			ui.inputCommand(currPlayer);
+			switch (ui.getCommandId()) {
+				case UI.CMD_ROLL :
+					if (!rollDone) {
+						if (!rentOwed) {
+							dice.roll();
+							ui.displayDice(currPlayer, dice);
+							currPlayer.move(dice.getTotal());
+							ui.display();
+							if (currPlayer.passedGo()) {
+								currPlayer.doTransaction(+GO_MONEY);
+								ui.displayPassedGo(currPlayer);
+								ui.displayBankTransaction(currPlayer);
+							}
+							ui.displaySquare(currPlayer, board);
+							if (board.isProperty(currPlayer.getPosition()) && 
+									board.getProperty(currPlayer.getPosition()).isOwned() &&
+									!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
+										rentOwed = true;
+							} else {
+								rentOwed = false;
+							}
+							if (!dice.isDouble()) {
+								rollDone = true;
+							}
+						} else {
+							ui.displayError(UI.ERR_RENT_OWED);	
 						}
-
-						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
-					}
-				}
-				break;
-
-			case "buy":
-				canBuy = true;
-				for(int q = 0; q < players.size(); q++)
-				{
-					for(int r = 0; r < 40; r++)
-					{
-						if(player.prop[e.getPosition()].equals(players.get(q).player1[r]))
-						{
-							ui.displayString("This property is already owned, you cannot buy it.");
-							canBuy = false;
-							break;
-						}
-					}
-				}
-
-				if(canBuy)
-				{
-					String numberAsString2 = Integer.toString(e.buyProperty()); // calls buyProperty function player class
-					ui.displayString(numberAsString2);
-					players.get(p).player1[i] = player.prop[e.getPosition()]; // adds name of property to each players personal array
-					players.get(p).player2[i] = player.proprice[e.getPosition()];
-					i++;
-					k++;
-				}
-
-				if(e.getBalance() <= 0)
-				{
-					for(int p = 0; p < players.size(); p++)
-					{
-						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
-						// gets the sum of the value of each players property
-
-						int temp1 = players.get(p).getBalance() + temp;
-						String tempA = players.get(p).getName();
-						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance
-						String tempB = players.get(p+1).getName(); // get players name associated with assets total
-						if (temp1 < temp2)
-						{
-							temp1 = temp2; // compares to find largest
-							tempA = tempB;
-						}
-						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
-						}
+					} else {
+						ui.displayError(UI.ERR_DOUBLE_ROLL);
 					}
 					break;
-
-
-			case "help": // if player requires help remembering commands
-				String validCommands = ">Accepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
-				ui.displayString(validCommands);
-				break;
-
-			case "property": // gives players list of properties that are owned
-				int j = 0;
-				ui.displayString("Properties owned are:" + "\n");
-				while(j != k)
-				{
-					ui.displayString(players.get(p).player1[j]); // calls player1 array form player class
-					j++;
-				}
-				break;
-
-			case "done": // iterates the players
-				p = p + 1;
-				if(p == players.size()) // allows player to end turn so next player can begin their turn
-				{
-					p = 0;
-				}
-				players.get(p).move(0);
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException a)
-				{
-					System.out.println("Sleep exeception.");
-				}
-				rolls = 0;
-				condition = false; // breaks boolean statement so switch statements can start again
-				break;
-
-			case "quit":
-				try{
-					for(int p = 0; p < players.size(); p++)
-					{
-						int temp = players.get(p).player2[0] + players.get(p).player2[1] + players.get(p).player2[2] + players.get(p).player2[3] + players.get(p).player2[4] + players.get(p).player2[5];
-						// gets the sum of the value of each players property
-
-						int temp1 = players.get(p).getBalance() + temp;
-						String tempA = players.get(p).getName();
-						int temp2 = players.get(p+1).getBalance() + (players.get(p+1).player2[0] + players.get(p+1).player2[1] + players.get(p+1).player2[2] + players.get(p+1).player2[3] + players.get(p+1).player2[4] + players.get(p+1).player2[5]);
-						// get total of players assets and their balance
-						String tempB = players.get(p+1).getName(); // get players name associated with assets total
-						if (temp1 < temp2)
+				case UI.CMD_PAY_RENT :
+					if (board.isProperty(currPlayer.getPosition())) {
+						if(((((((((((((((((currPlayer.getPosition()) == 1) || ((currPlayer.getPosition()) == 6)) || ((currPlayer.getPosition()) == 11)) || ((currPlayer.getPosition()) == 16)) || ((currPlayer.getPosition()) == 21))  || ((currPlayer.getPosition()) == 26)) || ((currPlayer.getPosition()) == 31)) || ((currPlayer.getPosition()) == 37)) || ((currPlayer.getPosition()) %40 == 1) || ((currPlayer.getPosition()) %40 == 6)) || ((currPlayer.getPosition()) %40 == 11)) || ((currPlayer.getPosition()) %40 == 16)) || ((currPlayer.getPosition()) %40 == 21))  || ((currPlayer.getPosition()) %40 == 26)) || ((currPlayer.getPosition()) %40 == 31)) || ((currPlayer.getPosition()) % 40 == 37)))
+						{ // may need to move 
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() +1); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() +2);
+						
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property1.getOwner().equals(property2.getOwner().equals(property.getOwner()))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.getRentColourGroup()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}}
+						
+						
+						if((((((((((((((((currPlayer.getPosition()) == 2) || ((currPlayer.getPosition()) == 7)) || ((currPlayer.getPosition()) == 12)) || ((currPlayer.getPosition()) == 17)) || ((currPlayer.getPosition()) == 22))  || ((currPlayer.getPosition()) == 27)) || ((currPlayer.getPosition()) == 32)) || ((currPlayer.getPosition()) %40 == 2) || ((currPlayer.getPosition()) %40 == 7)) || ((currPlayer.getPosition()) %40 == 12)) || ((currPlayer.getPosition()) %40 == 17)) || ((currPlayer.getPosition()) % 40 == 22))  || ((currPlayer.getPosition()) % 40 == 27)) || ((currPlayer.getPosition()) % 40 == 32)))) 
+						{ // may need to move 
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() +1); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() -1);
+						
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property1.getOwner().equals(property2.getOwner().equals(property.getOwner()))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.getRentColourGroup()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}}
+						
+						
+						if(((((((((((((((((currPlayer.getPosition()) == 3) || ((currPlayer.getPosition()) == 8)) || ((currPlayer.getPosition()) == 13)) || ((currPlayer.getPosition()) == 18)) || ((currPlayer.getPosition()) == 23))  || ((currPlayer.getPosition()) == 28)) || ((currPlayer.getPosition()) == 33)) || ((currPlayer.getPosition()) == 39)) || ((currPlayer.getPosition()) %40 == 3) || ((currPlayer.getPosition()) %40 == 8)) || ((currPlayer.getPosition()) %40 == 13)) || ((currPlayer.getPosition()) %40 == 18)) || ((currPlayer.getPosition()) %40 == 23))  || ((currPlayer.getPosition()) %40 == 28)) || ((currPlayer.getPosition()) %40 == 33)) || ((currPlayer.getPosition()) %40 == 39)))
+						{ // may need to move 
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition()-1); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition()-2);
+						
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property1.getOwner().equals(property2.getOwner().equals(property.getOwner()))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.getRentColourGroup()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						if(((currPlayer.getPosition()) == 5))
 						{
-							temp1 = temp2; // compares to find largest
-							tempA = tempB;
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() +10); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() +20);
+							Property property3 = board.getProperty(currPlayer.getPosition() +30);
+							
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner().equals(property3.getOwner())))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.get3StationsOwned()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}
+								
+									if(property.getOwner().equals(property1.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property2.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property3.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									if(property.getOwner().equals(property2.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
 						}
 
-						JOptionPane.showMessageDialog(null, "The winner of the game is: " + tempA + " with a winning balance of " + temp1);
-						ui.frame.dispose();
-					}
-					}	catch (IndexOutOfBoundsException d)
-					{
-						System.out.println("Out of bounds");
-					}
+									
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+								} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}
+							
+							
+							
+						}
+						
+						if(((currPlayer.getPosition()) == 15))
+						{
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() -10); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() +10);
+							Property property3 = board.getProperty(currPlayer.getPosition() +20);
+							
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner().equals(property3.getOwner())))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.get3StationsOwned()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}
+								
+									if(property.getOwner().equals(property1.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property2.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property3.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									if(property.getOwner().equals(property2.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
 
-			default: // case if a command is entered that is not recognised
-				String errorMessage = "ERROR: Invalid command\nAccepted commands are: BALANCE, BUY, PAY RENT, HELP, PROPERTY, ROLL";
-				ui.displayString(errorMessage);
+									
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+								} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}
+							
+							
+							
+						}
+						
+						if(((currPlayer.getPosition()) == 25))
+						{
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() +10); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() -20);
+							Property property3 = board.getProperty(currPlayer.getPosition() -10);
+							
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner().equals(property3.getOwner())))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.get3StationsOwned()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}
+								
+									if(property.getOwner().equals(property1.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property2.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property3.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									if(property.getOwner().equals(property2.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+
+									
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+								} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}
+							
+							
+							
+						}
+						
+						if(((currPlayer.getPosition()) == 35))
+						{
+							Property property = board.getProperty(currPlayer.getPosition());
+							Property property1 = board.getProperty(currPlayer.getPosition() -10); // sees if next property is owned by same player
+							Property property2 = board.getProperty(currPlayer.getPosition() -20);
+							Property property3 = board.getProperty(currPlayer.getPosition() -30);
+							
+							if (property.isOwned()) {
+								if (!property.getOwner().equals(currPlayer)) {
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner().equals(property3.getOwner())))) // if same owner 
+											{
+												currPlayer.doTransaction(-property.get3StationsOwned()); // gets double the rent if colour group owned
+											
+									if (!rentPaid) {
+										if (currPlayer.getBalance()>=property.getRent()) {
+											Player owner = property.getOwner();
+											currPlayer.doTransaction(-property.getRent());
+											owner.doTransaction(+property.getRent());
+											ui.displayTransaction(currPlayer, owner);
+											rentPaid = true;	
+											rentOwed = false;
+										} 
+										//////////////////////
+										else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+										} 
+										/////////////////////
+									} else {
+										ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+									}
+								}
+								
+									if(property.getOwner().equals(property1.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property2.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property3.getOwner())) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get1StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property2.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									
+									if(property.getOwner().equals(property1.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+									if(property.getOwner().equals(property2.getOwner().equals(property3.getOwner()))) // if same owner 
+									{
+										currPlayer.doTransaction(-property.get2StationsOwned()); // gets double the rent if colour group owned
+									
+							if (!rentPaid) {
+								if (currPlayer.getBalance()>=property.getRent()) {
+									Player owner = property.getOwner();
+									currPlayer.doTransaction(-property.getRent());
+									owner.doTransaction(+property.getRent());
+									ui.displayTransaction(currPlayer, owner);
+									rentPaid = true;	
+									rentOwed = false;
+								} 
+								//////////////////////
+								else {
+									ui.displayError(UI.ERR_BANKRUPT);										
+								} 
+								/////////////////////
+							} else {
+								ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							}
+						}
+
+								} else {
+									ui.displayError(UI.ERR_SELF_OWNED);								
+								}
+							} else {
+								ui.displayError(UI.ERR_NOT_OWNED);							
+							}
+							
+							if(((((currPlayer.getPosition()) == 12))))
+							{ // may need to move 
+								Property propertya = board.getProperty(currPlayer.getPosition());
+								Property propertya1 = board.getProperty(currPlayer.getPosition() +16); // sees if next property is owned by same player
+				
+							
+								if (propertya.isOwned()) {
+									if (!propertya.getOwner().equals(currPlayer)) {
+										if(propertya1.getOwner().equals(propertya.getOwner())) // if same owner 
+												{
+													currPlayer.doTransaction(-propertya.getFactories2Owned()); // gets double the rent if colour group owned
+												
+										if (!rentPaid) {
+											if (currPlayer.getBalance()>=propertya.getRent()) {
+												Player owner = propertya.getOwner();
+												currPlayer.doTransaction(-propertya.getRent());
+												owner.doTransaction(+propertya.getRent());
+												ui.displayTransaction(currPlayer, owner);
+												rentPaid = true;	
+												rentOwed = false;
+											} 
+											//////////////////////
+											else {
+												ui.displayError(UI.ERR_BANKRUPT);										
+											} 
+											/////////////////////
+										} else {
+											ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+										}
+									}} else {
+										ui.displayError(UI.ERR_SELF_OWNED);								
+									}
+								} else {
+									ui.displayError(UI.ERR_NOT_OWNED);							
+								}}
+							
+
+							if(((((currPlayer.getPosition()) == 28))))
+							{ // may need to move 
+								Property propertya = board.getProperty(currPlayer.getPosition());
+								Property propertya1 = board.getProperty(currPlayer.getPosition() -16); // sees if next property is owned by same player
+				
+							
+								if (propertya.isOwned()) {
+									if (!propertya.getOwner().equals(currPlayer)) {
+										if(propertya1.getOwner().equals(propertya.getOwner())) // if same owner 
+												{
+													currPlayer.doTransaction(-propertya.getFactories2Owned()); // gets double the rent if colour group owned
+												
+										if (!rentPaid) {
+											if (currPlayer.getBalance()>=propertya.getRent()) {
+												Player owner = propertya.getOwner();
+												currPlayer.doTransaction(-propertya.getRent());
+												owner.doTransaction(+propertya.getRent());
+												ui.displayTransaction(currPlayer, owner);
+												rentPaid = true;	
+												rentOwed = false;
+											} 
+											//////////////////////
+											else {
+												ui.displayError(UI.ERR_BANKRUPT);										
+											} 
+											/////////////////////
+										} else {
+											ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+										}
+									}} else {
+										ui.displayError(UI.ERR_SELF_OWNED);								
+									}
+								} else {
+									ui.displayError(UI.ERR_NOT_OWNED);							
+								}}
+							
+							
+						}
+						
+						
+						 else {
+							ui.displayError(UI.ERR_NOT_A_PROPERTY);
+						}
+						}	
+					/// THE EEEEEEEEEEEEEEEEENNNNNNNNNNNNNNDDDDDDD IS HEREEEEEEEEEEEEEEEEEEEEEEEEEEE
+					
+					break;	
+				case UI.CMD_BUY :
+					if (board.isProperty(currPlayer.getPosition())) {
+						Property property = board.getProperty(currPlayer.getPosition());
+						if (!property.isOwned()) {
+							if (currPlayer.getBalance() >= property.getValue()) {				
+								currPlayer.doTransaction(-property.getValue());
+								ui.displayBankTransaction(currPlayer);
+								currPlayer.boughtProperty(property);
+								ui.displayLatestProperty(currPlayer);
+							} else {
+								ui.displayError(UI.ERR_INSUFFICIENT_FUNDS);
+							}
+						} else {
+							ui.displayError(UI.ERR_IS_OWNED);
+						}
+					} else {
+						ui.displayError(UI.ERR_NOT_A_PROPERTY);
+					}
+					break;
+				case UI.CMD_BALANCE :
+					ui.displayBalance(currPlayer);
+					break;
+				case UI.CMD_PROPERTY :
+					ui.displayProperty(currPlayer);
+					break;
+				case UI.CMD_HELP :
+					ui.displayCommandHelp();
+					break;
+				case UI.CMD_DONE :
+					if (rollDone) {
+						if (!rentOwed || (rentOwed && rentPaid)) {
+							turnFinished = true;
+						} else {
+							ui.displayError(UI.ERR_RENT_OWED);
+						}
+					} else {
+						ui.displayError(UI.ERR_NO_ROLL);
+					}
+					break;
+				case UI.CMD_QUIT : 
+					turnFinished = true;
+					gameOver = true;
+					break;
+				case UI.CMD_BANKRUPT :
+				 ui.bankruptme(currPlayer, null, null, currPlayer, rentPaid); // done to match player configuration
+				 players.remove(currPlayer);
+				 numPlayers--;
+				 turnFinished = true;
+				 if(numPlayers <= 1)
+				 {
+					turnFinished = true;
+					gameOver = true;
+				 }
+					break;
+					
+					}
+ 			}
+		while (!turnFinished);
+		return;
+	}
+	
+	public void nextPlayer () {
+		currPlayer = players.get((players.indexOf(currPlayer) + 1) % players.size());
+		return;
+	}
+	
+	public void decideWinner () {
+		ArrayList<Player> playersWithMostAssets = new ArrayList<Player>();
+		int mostAssets = players.get(0).getAssets();
+		for (Player player : players) {
+			ui.displayAssets(player);
+			if (player.getAssets() > mostAssets) {
+				playersWithMostAssets.clear(); 
+				playersWithMostAssets.add(player);
+			} else if (player.getAssets() == mostAssets) {
+				playersWithMostAssets.add(player);
 			}
+		}
+		if (playersWithMostAssets.size() == 1) {
+			ui.displayWinner(playersWithMostAssets.get(0));
+		} else {
+			ui.displayDraw(playersWithMostAssets);
 		}
 		return;
 	}
-	public static void main (String args[])
-	{
-		Monopoly game = new Monopoly(); // launches the game
+	
+	public void displayGameOver () {
+		ui.displayGameOver ();
 		return;
 	}
+	
+	public boolean isGameOver () {
+		return gameOver;
+	}
+
 }

@@ -25,13 +25,8 @@ public class InfoPanel extends JPanel {
 		return;
 	}
 	
-	public void addText (String text) {
+	public void displayString (String text) {
 		textArea.setText(textArea.getText()+"\n"+text);
 	}
-	public void refresh () {
-		revalidate();
-		repaint();
-		return;
-    }
 
 }
