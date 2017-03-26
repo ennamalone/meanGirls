@@ -58,13 +58,13 @@ public class Player {
 	public boolean passedGo () {
 		return passedGo;
 	}
-	///////////////////////////////////////
+	
 	public void boughtProperty (Property property) {
 		property.setOwner(this);
 		properties.add(property);
 		return;
 	}
-	/////////////////////////////
+	
 	public Property getLatestProperty () {
 		return properties.get(properties.size()-1);
 	}

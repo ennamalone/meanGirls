@@ -246,15 +246,15 @@ public class UI {
 		return;
 	}
 	
-	public void bankruptme (Player player, Property property, Property setOwner, Player inPlayer, boolean isOwned)
+	public void bankruptme (Player player, Property property, Property setOwner, Player inPlayer, boolean isOwned)  // all that is needed to achieve following
 	{
 		
-		for(int i = 0; i < 23; i++)
+		for(int i = 0; i < 23; i++) // goes through players assets and returns them to the bank 
 		{
-		properties.remove(property);
+		properties.remove(property);  
 		 isOwned = false;
 		}
-		infoPanel.displayString(player + "properties owned are returned to bank and player removed from game");
+		infoPanel.displayString(player + "properties owned are returned to bank and player removed from game"); // retuns message to infopanel
 		return;
 		
 	}
