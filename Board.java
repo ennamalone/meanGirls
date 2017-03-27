@@ -64,3 +64,4 @@ public class Board {
 		return squares[index] instanceof Property;
 	}
 }
+

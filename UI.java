@@ -35,6 +35,7 @@ public class UI {
 	public static final int ERR_RENT_OWED= 9;
 	public static final int ERR_COLGROUP_NOT_OWNED = 10;
 	public static final int ERR_TOO_MANY_BUILDINGS = 11;
+	public static final int ERR_BANKRUPT = 12;
 
 	private final String[] errorMessages = {
 		"Error: Not a valid command.",
@@ -48,7 +49,8 @@ public class UI {
 		"Error: You own the property.",
 		"Error: You owe rent.",
 		"Error: You cannot build without owning all the properties of that colour.",
-		"Error: You have already built the maximum number of buildings for this property."
+		"Error: You have already built the maximum number of buildings for this property.",
+		"Error: You cannot afford to pay rent."
 	};
 
 	private JFrame frame = new JFrame();
@@ -58,6 +60,7 @@ public class UI {
 	private String string;
 	private boolean done;
 	private int commandId;
+	private ArrayList<Property> properties = new ArrayList<Property>();
 
 	public String build;
 	public int buildNo;
@@ -273,6 +276,20 @@ public class UI {
 		return;
 	}
 
+	
+	public void bankruptme (Player player, Property property, Property setOwner, Player inPlayer, boolean isOwned)  // all that is needed to achieve following
+	{
+		
+		for(int i = 0; i < 30; i++) // goes through players assets and returns them to the bank 
+		{
+		properties.remove(property);  
+		 isOwned = false;
+		}
+		infoPanel.displayString(player + "properties owned are returned to bank and player removed from game"); // retuns message to infopanel
+		return;
+		
+	}
+	
 	public void displayProperty (Player player) {
 		ArrayList<Property> propertyList = player.getProperties();
 		if (propertyList.size() == 0) {
