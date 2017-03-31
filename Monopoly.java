@@ -94,10 +94,12 @@ public class Monopoly {
 		boolean rollDone = false;
 		boolean rentOwed = false;
 		boolean rentPaid = false;
+		boolean negativeBalance = false;
 		do {
 			ui.inputCommand(currPlayer);
 			switch (ui.getCommandId()) {
 				case UI.CMD_ROLL :
+					if(!negativeBalance){/////////////////////////////////////////
 					if (!rollDone) {
 						if (!rentOwed) {
 							dice.roll();
@@ -123,10 +125,34 @@ public class Monopoly {
 						} else {
 							ui.displayError(UI.ERR_RENT_OWED);
 						}
-					} else {
+					}} else {
 						ui.displayError(UI.ERR_DOUBLE_ROLL);
 					}
+					
+						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax if payed immediately 
+						{
+							currPlayer.doTransaction(-200);
+							ui.displayError(UI.INCOMETAX);
+						}
+						
+						if(((currPlayer.getPosition() == 38)) || currPlayer.getPosition() %40 == 38) // case if player lands on Super tax and tax if payed immediately
+						{
+							currPlayer.doTransaction(-100);
+							ui.displayError(UI.SUPERTAX);
+						}
+							if(currPlayer.getBalance() <= 0)
+							{
+								ui.displayError(UI.NEGATIVEBALANCE);
+								negativeBalance = true;
+							}
+								else
+								{
+									negativeBalance = false;
+								}
 					break;
+					
+					
+					
 				case UI.CMD_PAY_RENT :
 					if (board.isProperty(currPlayer.getPosition())) {
 						if(((((((((((((((((((currPlayer.getPosition()) == 6)) || ((currPlayer.getPosition()) == 11)) || ((currPlayer.getPosition()) == 16)) || ((currPlayer.getPosition()) == 21)) || ((currPlayer.getPosition()) %40 == 6)) || ((currPlayer.getPosition()) %40 == 11)) || ((currPlayer.getPosition()) %40 == 16)) || ((currPlayer.getPosition()) %40 == 21)))))))))))
@@ -1350,12 +1376,13 @@ public class Monopoly {
 					break;
 				case UI.CMD_DONE :
 					if (rollDone) {
+						if(!negativeBalance){ ////////////////////////////////////////////////////
 						if (!rentOwed || (rentOwed && rentPaid)) {
 							turnFinished = true;
 						} else {
 							ui.displayError(UI.ERR_RENT_OWED);
 						}
-					} else {
+					}} else {
 						ui.displayError(UI.ERR_NO_ROLL);
 					}
 					break;

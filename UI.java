@@ -36,6 +36,10 @@ public class UI {
 	public static final int ERR_COLGROUP_NOT_OWNED = 10;
 	public static final int ERR_TOO_MANY_BUILDINGS = 11;
 	public static final int ERR_BANKRUPT = 12;
+	public static final int INCOMETAX = 13;
+	public static final int SUPERTAX = 14;
+	public static final int NEGATIVEBALANCE = 15;
+	
 
 	private final String[] errorMessages = {
 		"Error: Not a valid command.",
@@ -50,7 +54,10 @@ public class UI {
 		"Error: You owe rent.",
 		"Error: You cannot build without owning all the properties of that colour.",
 		"Error: You have already built the maximum number of buildings for this property.",
-		"Error: You cannot afford to pay rent."
+		"Error: You cannot afford to pay rent.",
+		"You have landed on Income Tax and 200  has been deducted from your balance",
+		"You have landed on Super Tax and 100  has been deducted from your balance",
+		"Unable to roll dice or end turn while your balance is negative"
 	};
 
 	private JFrame frame = new JFrame();
