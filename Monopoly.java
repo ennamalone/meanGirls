@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Monopoly {
 
 	public static final int MAX_NUM_PLAYERS = 6;
-	private static final int START_MONEY = 1500;
+	private static final int START_MONEY = 100;
 	private static final int GO_MONEY = 200;
 
 	private ArrayList<Player> players = new ArrayList<Player>();
@@ -100,34 +100,39 @@ public class Monopoly {
 			switch (ui.getCommandId()) {
 				case UI.CMD_ROLL :
 					if(!negativeBalance){/////////////////////////////////////////
-					if (!rollDone) {
-						if (!rentOwed) {
-							dice.roll();
-							ui.displayDice(currPlayer, dice);
-							currPlayer.move(dice.getTotal());
-							ui.display();
-							if (currPlayer.passedGo()) {
-								currPlayer.doTransaction(+GO_MONEY);
-								ui.displayPassedGo(currPlayer);
-								ui.displayBankTransaction(currPlayer);
-							}
-							ui.displaySquare(currPlayer, board);
-							if (board.isProperty(currPlayer.getPosition()) &&
-									board.getProperty(currPlayer.getPosition()).isOwned() &&
-									!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
-										rentOwed = true;
+						if (!rollDone) {
+							if (!rentOwed) {
+								dice.roll();
+								ui.displayDice(currPlayer, dice);
+								currPlayer.move(dice.getTotal());
+								ui.display();
+								if (currPlayer.passedGo()) {
+									currPlayer.doTransaction(+GO_MONEY);
+									ui.displayPassedGo(currPlayer);
+									ui.displayBankTransaction(currPlayer);
+								}
+								ui.displaySquare(currPlayer, board);
+								if (board.isProperty(currPlayer.getPosition()) &&
+										board.getProperty(currPlayer.getPosition()).isOwned() &&
+										!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
+											rentOwed = true;
+								} else {
+									rentOwed = false;
+								}
+								if (!dice.isDouble()) {
+									rollDone = true;
+								}
 							} else {
-								rentOwed = false;
+								ui.displayError(UI.ERR_RENT_OWED);
 							}
-							if (!dice.isDouble()) {
-								rollDone = true;
-							}
-						} else {
-							ui.displayError(UI.ERR_RENT_OWED);
+						}	else {
+							ui.displayError(UI.ERR_DOUBLE_ROLL);
 						}
-					}} else {
-						ui.displayError(UI.ERR_DOUBLE_ROLL);
-					}
+						
+						}	else {
+								ui.displayError(UI.NEGATIVEBALANCE);// end to if negative balance loop
+						}
+					
 					
 						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax if payed immediately 
 						{
@@ -140,7 +145,7 @@ public class Monopoly {
 							currPlayer.doTransaction(-100);
 							ui.displayError(UI.SUPERTAX);
 						}
-							if(currPlayer.getBalance() <= 0)
+							if(currPlayer.getBalance() < 0)
 							{
 								ui.displayError(UI.NEGATIVEBALANCE);
 								negativeBalance = true;
@@ -1375,15 +1380,20 @@ public class Monopoly {
 					ui.displayCommandHelp();
 					break;
 				case UI.CMD_DONE :
-					if (rollDone) {
-						if(!negativeBalance){ ////////////////////////////////////////////////////
-						if (!rentOwed || (rentOwed && rentPaid)) {
-							turnFinished = true;
+					if(!negativeBalance){ ////////////////////////////////////////////////////
+						if (rollDone) { 
+							if (!rentOwed || (rentOwed && rentPaid)) {
+								turnFinished = true;
+							} else {
+								ui.displayError(UI.ERR_RENT_OWED);
+							}
 						} else {
-							ui.displayError(UI.ERR_RENT_OWED);
-						}
-					}} else {
 						ui.displayError(UI.ERR_NO_ROLL);
+					}
+					}
+					else 
+					{ 
+						ui.displayError(UI.NEGATIVEBALANCE);
 					}
 					break;
 					
