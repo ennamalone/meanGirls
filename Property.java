@@ -51,25 +51,29 @@ public class Property extends Square {
 	///////////////////
 	public int getRentColourGroup() 
 	{  // returns rent if all colour group owned by single player
-	return (2*rent[0]);
-	}
-	
-	public int get1StationsOwned() { // rent if single players owns another station
-	return (rent[0]);
-	}
-	
-	public int get2StationsOwned() { // rent if single players owns another 2 stations
 	return 2*(rent[0]);
 	}
 	
-	public int get3StationsOwned() { // rent if single players owns all the stations
+	public int get1StationsOwned() { // rent if single players owns another station
+	return 2*(rent[0]);
+	}
+	
+	public int get2StationsOwned() { // rent if single players owns another 3 stations
 	return 3*(rent[0]);
 	}
 	
-	
-	public int getFactories2Owned(){  // case of one player ownies both factories 
-	return 10*(dice.getTotal());
+	public int get3StationsOwned() { // rent if single players owns all the stations
+	return 4*(rent[0]);
 	}
+	
+	
+	public int getFactoriesOwned(){  // case of one player owns both factories 
+	return 4*(dice.getTotal());
+	}
+	
+	public int get2FactoriesOwned(){  // case of one player owns both factories 
+		return 10*(dice.getTotal());
+		}
 	
 	//////////////////////////
 	
@@ -84,7 +88,7 @@ public class Property extends Square {
 	
 			if(buildings >= 5)
 			{
-				return UI.ERR_TOO_MANY_BUILDINGS;
+				return UI.ERR_TOO_MANY_BUILDINGS; // if a hotel has already been constructed
 			}
 			else
 			{

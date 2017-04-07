@@ -1,24 +1,24 @@
 import java.util.ArrayList;
 
-// i broke rent 
+
 
 public class Monopoly {
 
-	public static final int MAX_NUM_PLAYERS = 6;
+	public static final int MAX_NUM_PLAYERS = 6;  // all constant with apt names
 	private static final int START_MONEY = 1500;
 	private static final int GO_MONEY = 200;
 
 	private ArrayList<Player> players = new ArrayList<Player>();
-	private Player currPlayer;
-	private UI ui = new UI(players);
-	private int numPlayers;
-	private Dice dice = new Dice();
-	private boolean gameOver = false;
-	private Board board = new Board();
+	private Player currPlayer; // keeps track of which player is playing the game
+	private UI ui = new UI(players); // interacts with UI class
+	private int numPlayers; // keeps track of number of players to not exceed maximum
+	private Dice dice = new Dice(); // interacts with dice class
+	private boolean gameOver = false; // checks for game end
+	private Board board = new Board(); // interacts with board class
 	String prop;
 	int noBuild;
-	int count = 0;
-	private boolean colourOwned = false;
+	int count = 0; // counts number of properties build on a square 
+	private boolean colourOwned = false; // check if entire colour group is owned by one player 
 
 	Monopoly () {
 		numPlayers = 0;
@@ -26,7 +26,7 @@ public class Monopoly {
 		return;
 	}
 
-	public void inputNames () {
+	public void inputNames () {  // mechanism for gathering players name and assigned them staring funds 
 		do {
 			ui.inputName(numPlayers);
 			if (!ui.isDone()) {
@@ -60,7 +60,7 @@ public class Monopoly {
 		return 40;
 	}
 
-	public void decideStarter () {
+	public void decideStarter () { // mechanism for deciding player order with highest roll
 		ArrayList<Player> inPlayers = new ArrayList<Player>(players),
 				selectedPlayers = new ArrayList<Player>();
 		boolean tie = false;
@@ -79,7 +79,7 @@ public class Monopoly {
 					selectedPlayers.add(p);
 				}
 			}
-			if (tie) {
+			if (tie) { // case of highest roll ends in a tie 
 				ui.displayRollDraw();
 				inPlayers = new ArrayList<Player>(selectedPlayers);
 				selectedPlayers.clear();
@@ -91,19 +91,16 @@ public class Monopoly {
 		return;
 	}
 
-	public void processTurn () {
-		boolean turnFinished = false;
-		boolean rollDone = false;
-		boolean rentOwed = false;
-		boolean rentPaid = false;
-		boolean negativeBalance = false;
+	public void processTurn () {  // goes through this procedure every turn
+		boolean turnFinished = false; // case if the player has entered done 
+		boolean rollDone = false; 	// case if player has yet to roll on their turn
+		boolean negativeBalance = false; // case if the players balance goes negative 
 		do {
 			ui.inputCommand(currPlayer);
 			switch (ui.getCommandId()) {
 				case UI.CMD_ROLL :
-					if(!negativeBalance){/////////////////////////////////////////
+					if(!negativeBalance){  // player is unable to roll the dice if their balance is negative
 						if (!rollDone) {
-							if (!rentOwed) {
 								dice.roll();
 								ui.displayDice(currPlayer, dice);
 								currPlayer.move(dice.getTotal());
@@ -117,29 +114,24 @@ public class Monopoly {
 								if (board.isProperty(currPlayer.getPosition()) &&
 										board.getProperty(currPlayer.getPosition()).isOwned() &&
 										!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
-											rentOwed = true;
-								} else {
-									rentOwed = false;
-								}
+								} 
 								if (!dice.isDouble()) {
 									rollDone = true;
 								}
-							} else {
-								ui.displayError(UI.ERR_RENT_OWED);
-							}
+							
 						}	else {
 							ui.displayError(UI.ERR_DOUBLE_ROLL);
 						}
 						} // end to if negative balance loop
 					
 					
-						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax if payed immediately 
+						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax is payed immediately 
 						{
 							currPlayer.doTransaction(-200);
 							ui.displayError(UI.INCOMETAX);
 						}
 						
-						if(((currPlayer.getPosition() == 38)) || currPlayer.getPosition() %40 == 38) // case if player lands on Super tax and tax if payed immediately
+						if(((currPlayer.getPosition() == 38)) || currPlayer.getPosition() %40 == 38) // case if player lands on Super tax and tax is payed immediately
 						{
 							currPlayer.doTransaction(-100);
 							ui.displayError(UI.SUPERTAX);
@@ -153,41 +145,119 @@ public class Monopoly {
 								{
 									negativeBalance = false;
 								}
-					break;
-					
-					
-					
-				case UI.CMD_PAY_RENT :
-					if (board.isProperty(currPlayer.getPosition())) {
-						Property property = board.getProperty(currPlayer.getPosition());
-						if (property.isOwned()) {
-							if (!property.getOwner().equals(currPlayer)) {
-								if (!rentPaid) {
-									if (currPlayer.getBalance()>=property.getRent()) {
-										Player owner = property.getOwner();
-										currPlayer.doTransaction(-property.getRent());
-										owner.doTransaction(+property.getRent());
-										ui.displayTransaction(currPlayer, owner);
-										rentPaid = true;	
-										rentOwed = false;
-								} else {
-									ui.displayError(UI.ERR_BANKRUPT);										
-									} 
-								} else {
-									ui.displayError(UI.ERR_RENT_ALREADY_PAID);									
+							
+							if (board.isProperty(currPlayer.getPosition())) {  // sets tax to be paid automatically with no player input unless their balance is negative 
+								Property property = board.getProperty(currPlayer.getPosition());
+								if (property.isOwned()) {
+									if (!property.getOwner().equals(currPlayer)) {
+											if (currPlayer.getBalance()>=property.getRent()) {
+												Player owner = property.getOwner();
+												currPlayer.doTransaction(-property.getRent());
+												owner.doTransaction(+property.getRent());
+												ui.displayTransaction(currPlayer, owner);
+									
+												if(property.getColour().equals("station"))  // if the property the owner lands on is a station then do as follows
+												{
+													currPlayer.doTransaction(-property.getRent());
+													owner.doTransaction(+property.getRent());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(property.getColour().equals("utility")) // if the property the owner lands on is a utility then do as follows
+												{
+													currPlayer.doTransaction(-property.getFactoriesOwned());  // rent is set to 4* the dice roll of the player
+													owner.doTransaction(+property.getFactoriesOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												
+												// check the player property owned list to see what other properties owner of current square owns 
+												
+												if(owner.getProperties().equals("Water Works") && owner.getProperties().equals("Electric Co"))
+												{
+													currPlayer.doTransaction(-property.get2FactoriesOwned()); // rent is set to 10* the dice roll of player as owner owns 2 utilities
+													owner.doTransaction(+property.get2FactoriesOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+											
+												if(owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station"))
+												{
+													currPlayer.doTransaction(-property.get1StationsOwned()); // rent is double ordinary due to owner owning 2 stations
+													owner.doTransaction(+property.get1StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Liverpool St Station"))
+												{
+													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
+													owner.doTransaction(+property.get1StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
+												{
+													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
+													owner.doTransaction(+property.get1StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station"))
+												{
+													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
+													owner.doTransaction(+property.get1StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												/////////////////////////////////
+												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
+												{
+													currPlayer.doTransaction(-property.get2StationsOwned());  // rent is 3* ordinary due to owner owning 3 stations
+													owner.doTransaction(+property.get2StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station"))
+												{
+													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
+													owner.doTransaction(+property.get2StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
+												{
+													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
+													owner.doTransaction(+property.get2StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
+												{
+													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
+													owner.doTransaction(+property.get2StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station")  && owner.getProperties().equals("Femchurch St Station"))
+												{
+													currPlayer.doTransaction(-property.get3StationsOwned());   // rent is 4* ordinary due to owner owning all 4 stations
+													owner.doTransaction(+property.get3StationsOwned());
+													ui.displayTransaction(currPlayer, owner);
+												}
+												
+										} else {
+											ui.displayError(UI.ERR_BANKRUPT);										
+											} 
+										
+									} else {
+										ui.displayError(UI.ERR_SELF_OWNED);								
+									}
 								}
 							} else {
-								ui.displayError(UI.ERR_SELF_OWNED);								
+								ui.displayError(UI.ERR_NOT_A_PROPERTY);
 							}
-						} else {
-							ui.displayError(UI.ERR_NOT_OWNED);							
-						}
-					} else {
-						ui.displayError(UI.ERR_NOT_A_PROPERTY);
-					}
 					break;
+					
 				case UI.CMD_BUY :
-					if (board.isProperty(currPlayer.getPosition())) {
+					if (board.isProperty(currPlayer.getPosition())) {  // if player wishes to buy the square they land on
 						Property property = board.getProperty(currPlayer.getPosition());
 						if (!property.isOwned()) {
 							if (currPlayer.getBalance() >= property.getValue()) {
@@ -203,24 +273,23 @@ public class Monopoly {
 						}
 					}
 					break;
-				case UI.CMD_BALANCE :
+				case UI.CMD_BALANCE :  // player wishes to see their balance
 					ui.displayBalance(currPlayer);
 					break;
-				case UI.CMD_PROPERTY :
+				case UI.CMD_PROPERTY :  // player wishes to see a list of their purchased property
 					ui.displayProperty(currPlayer);
 					break;
-				case UI.CMD_HELP :
+				case UI.CMD_HELP :  // player requires help
 					ui.displayCommandHelp();
 					break;
-				case UI.CMD_DONE :
+				case UI.CMD_DONE : // moves onto the next players turn 
 					if (rollDone) {
-						if(!negativeBalance){ ////////////////////////////////////////////////////
-						if (!rentOwed || (rentOwed && rentPaid)) {
+						if(!negativeBalance){  // if a players balance is negative they will no be allowed end their turn
 							turnFinished = true;
 						} else {
 							ui.displayError(UI.ERR_RENT_OWED);
 						}
-					}} else {
+					} else {
 						ui.displayError(UI.ERR_NO_ROLL);
 					}
 					break;
@@ -232,7 +301,7 @@ public class Monopoly {
 					int temp_3 = ui.noBuildInput();
 					if(temp_3 > 5)
 					{
-						ui.displayString("Too many buildings.");
+						ui.displayString("Too many buildings.");  // case if a hotel has already been built
 						break;
 					}
 					ui.displayString(">" + ui.buildNo);
@@ -244,7 +313,7 @@ public class Monopoly {
 							if(property.getColour().equals(currPlayer.getPropertyColour(z)))
 							{
 								count++;
-								if(((property.getColour().equals("dark blue"))||(property.getColour().equals("brown")))&&(count == 2)&&(!property.getColour().equals("utility")))
+								if(((property.getColour().equals("dark blue"))||(property.getColour().equals("brown")))&&(count == 2)&&(!property.getColour().equals("utility"))) // these squares only have 2 properties in their colour groups
 								{
 									colourOwned = true;
 									break;
@@ -265,12 +334,12 @@ public class Monopoly {
 					{
 						property.addBuidings(temp_3);
 						ui.displayString("> " + property.getNoOfBuildings());
-						currPlayer.doTransaction(temp_3 * -(property.getBuildPrice()));
+						currPlayer.doTransaction(temp_3 * -(property.getBuildPrice())); // takes price of construction from players balance
 						ui.displayString("> Bank balance:" + currPlayer.getBalance());
 					}
 
 					break;
-				case UI.CMD_DEMOLISH :
+				case UI.CMD_DEMOLISH :  // demolish command
 					String temp_4 = ui.buildInput();
 					ui.displayString(">" + ui.build);
 					int temp_5 = ui.noBuildInput();
@@ -280,12 +349,12 @@ public class Monopoly {
 					{
 						if(temp_5 > 5)
 						{
-							ui.displayString("You can't demolish that many buildings.");
+							ui.displayString("You can't demolish that many buildings."); // all buildings already demolished 
 							break;
 						}
 						else if((property_1.getNoOfBuildings() >= 0)&&(property_1.getNoOfBuildings() > temp_5))
 						{
-							ui.displayString("There aren't enough buildings to demolish.");
+							ui.displayString("There aren't enough buildings to demolish.");  // no buildings to demolish
 							break;
 						}
 
@@ -319,7 +388,7 @@ public class Monopoly {
 					{
 						property_1.demolishBuidings(temp_5);
 						ui.displayString("> " + property_1.getNoOfBuildings());
-						currPlayer.doTransaction((temp_5 * property_1.getBuildPrice())/2);
+						currPlayer.doTransaction((temp_5 * property_1.getBuildPrice())/2);  // returns money raised from demolisition to the player 
 						ui.displayString("> Bank balance:" + currPlayer.getBalance());
 					}
 
@@ -330,7 +399,7 @@ public class Monopoly {
 					break;
 					
 				case UI.CMD_BANKRUPT : // case if bankrupt command entered
-					 ui.bankruptme(currPlayer, null, null, currPlayer, rentPaid); // done to match player configuration
+					 ui.bankruptme(currPlayer, null, null, currPlayer, negativeBalance); // done to match player configuration
 					 players.remove(currPlayer); // removes the player form the game
 					 numPlayers--;
 					 turnFinished = true; // finishes turn
@@ -350,7 +419,7 @@ public class Monopoly {
 		return;
 	}
 
-	public void decideWinner () {
+	public void decideWinner () {  // once quit is called or if only 1 player renains 
 		ArrayList<Player> playersWithMostAssets = new ArrayList<Player>();
 		int mostAssets = players.get(0).getAssets();
 		for (Player player : players) {
@@ -359,7 +428,7 @@ public class Monopoly {
 				playersWithMostAssets.clear();
 				playersWithMostAssets.add(player);
 			} else if (player.getAssets() == mostAssets) {
-				playersWithMostAssets.add(player);
+				playersWithMostAssets.add(player);  // calculates total assets add to players remaining bank balance 
 			}
 		}
 		if (playersWithMostAssets.size() == 1) {

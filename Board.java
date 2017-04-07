@@ -6,7 +6,7 @@ public class Board {
 
 	public static final int NUM_SQUARES = 40;
 
-	private Square[] squares = new Square[NUM_SQUARES];
+	private Square[] squares = new Square[NUM_SQUARES];  // colour codes were also added to the squares area
 
 	Board () {
 		squares[0] = new Square("Go");
