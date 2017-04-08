@@ -237,7 +237,34 @@ public class UI {
 		infoPanel.displayString(fromPlayer + " pays " + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
 		return;
 	}
+	
+	public void displayTransaction1 (Player fromPlayer, Player toPlayer) { // accounts for if 2 stations owned 
+		infoPanel.displayString(fromPlayer + " pays 2*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
+		return;
+	}
+	
+	public void displayTransaction2 (Player fromPlayer, Player toPlayer) {  // accounts for if 3 stations owned 
+		infoPanel.displayString(fromPlayer + " pays 3*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
+		return;
+	}
 
+	public void displayTransaction3 (Player fromPlayer, Player toPlayer) {  // accounts for if 4 stations owned 
+		infoPanel.displayString(fromPlayer + " pays 4*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
+		return;
+	}
+	
+	public void displayTransaction1a (Player fromPlayer, Player toPlayer) {  // accounts for if utility owned 
+		infoPanel.displayString(fromPlayer + " pays 4* dice roll " + " to " + toPlayer);
+		return;
+	}
+	
+	
+	public void displayTransaction1b (Player fromPlayer, Player toPlayer) {  // accounts for if 2 utilities owned 
+		infoPanel.displayString(fromPlayer + " pays 10* dice roll" + " to " + toPlayer);
+		return;
+	}
+	
+	
 	public void displayDice (Player player, Dice dice) {
 		infoPanel.displayString(player + " rolls " + dice + ".");
 		return;
@@ -304,7 +331,7 @@ public class UI {
 		} else {
 			infoPanel.displayString(player + " owns the following property...");
 			for (Property p : propertyList) {
-				infoPanel.displayString(p.getName() + ", rent " + p.getRent());
+				infoPanel.displayString(p.getName() + ", colour group: " +  p.getColour() + ", rent " + p.getRent());
 			}
 		}
 	}

@@ -74,11 +74,7 @@ public class Property extends Square {
 	public int get2FactoriesOwned(){  // case of one player owns both factories 
 		return 10*(dice.getTotal());
 		}
-	
-	//////////////////////////
-	
-	/////////////////////////
-	
+
 	
 		public Player getOwner () {
 			return owner;

@@ -21,7 +21,7 @@ public class Board {
 		squares[9] = new Property("Pentonville Rd", "light blue", 50, 120, new int[] {8,40,100,300,450,600});
 		squares[10] = new Square("Jail");
 		squares[11] = new Property("Pall Mall", "pink", 100, 140, new int[] {10,50,150,450,625,750});
-		squares[12] = new Property("Electric Co", "utility", 0, 150, new int[] {4,10,0,0,0,0});
+		squares[12] = new Property("Electric Co", "utility", 0, 150, new int[] {1,1,0,0,0,0});
 		squares[13] = new Property("Whitehall", "pink", 100, 140, new int[] {10,50,150,450,625,750});
 		squares[14] = new Property("Northumberland Ave", "pink", 100, 160, new int[] {12,60,180,500,700,900});
 		squares[15] = new Property("Marylebone Station", "station", 0, 200, new int[] {25,50,100,200,200,200});
@@ -37,7 +37,7 @@ public class Board {
 		squares[25] = new Property("Fenchurch St Station", "station", 0, 200, new int[] {25,50,100,200,200,200});
 		squares[26] = new Property("Leicester Sq", "yellow", 150, 260, new int[] {22,110,330,800,975,1150});
 		squares[27] = new Property("Coventry St", "yellow", 150, 260, new int[] {22,110,330,800,975,1150});
-		squares[28] = new Property("Water Works", "utility",0, 150, new int[] {4,10,0,0,0,0});
+		squares[28] = new Property("Water Works", "utility",0, 150, new int[] {1,1,0,0,0,0});
 		squares[29] = new Property("Piccadilly", "yellow", 150, 280, new int[] {22,120,360,850,1025,1200});
 		squares[30] = new Square("Go To Jail");
 		squares[31] = new Property("Regent St", "green", 200, 300, new int[] {26,130,390,900,1100,1275});

@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-
-
 public class Monopoly {
 
 	public static final int MAX_NUM_PLAYERS = 6;  // all constant with apt names
@@ -152,95 +150,99 @@ public class Monopoly {
 									if (!property.getOwner().equals(currPlayer)) {
 											if (currPlayer.getBalance()>=property.getRent()) {
 												Player owner = property.getOwner();
-												currPlayer.doTransaction(-property.getRent());
-												owner.doTransaction(+property.getRent());
-												ui.displayTransaction(currPlayer, owner);
+												
+												if(!property.getColour().equals("station") || !property.getColour().equals("utility"))
+												{
+													currPlayer.doTransaction(-property.getRent());
+													owner.doTransaction(+property.getRent());
+													ui.displayTransaction(currPlayer, owner);
+												}
 									
-												if(property.getColour().equals("station"))  // if the property the owner lands on is a station then do as follows
+												else if(property.getColour().equals("station"))  // if the property the owner lands on is a station then do as follows
 												{
 													currPlayer.doTransaction(-property.getRent());
 													owner.doTransaction(+property.getRent());
 													ui.displayTransaction(currPlayer, owner);
 												}
 												
-												if(property.getColour().equals("utility")) // if the property the owner lands on is a utility then do as follows
+												else if(property.getColour().equals("utility")) // if the property the owner lands on is a utility then do as follows
 												{
 													currPlayer.doTransaction(-property.getFactoriesOwned());  // rent is set to 4* the dice roll of the player
 													owner.doTransaction(+property.getFactoriesOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1a(currPlayer, owner);
 												}
 												
 												
 												// check the player property owned list to see what other properties owner of current square owns 
 												
-												if(owner.getProperties().equals("Water Works") && owner.getProperties().equals("Electric Co"))
+												else if( property.getColour().equals("station") && owner.getProperties().equals("Water Works") && owner.getProperties().equals("Electric Co"))
 												{
 													currPlayer.doTransaction(-property.get2FactoriesOwned()); // rent is set to 10* the dice roll of player as owner owns 2 utilities
 													owner.doTransaction(+property.get2FactoriesOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1b(currPlayer, owner);
 												}
 											
-												if(owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned()); // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Liverpool St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction1(currPlayer, owner);
 												}
-												/////////////////////////////////
-												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
+												
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());  // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction2(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction2(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction2(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction2(currPlayer, owner);
 												}
 												
-												if(owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station")  && owner.getProperties().equals("Femchurch St Station"))
+												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station")  && owner.getProperties().equals("Femchurch St Station"))
 												{
 													currPlayer.doTransaction(-property.get3StationsOwned());   // rent is 4* ordinary due to owner owning all 4 stations
 													owner.doTransaction(+property.get3StationsOwned());
-													ui.displayTransaction(currPlayer, owner);
+													ui.displayTransaction3(currPlayer, owner);
 												}
 												
 										} else {
@@ -402,6 +404,10 @@ public class Monopoly {
 					 ui.bankruptme(currPlayer, null, null, currPlayer, negativeBalance); // done to match player configuration
 					 players.remove(currPlayer); // removes the player form the game
 					 numPlayers--;
+					 for(int q = 0; q < 20; q++)
+					 {
+						 currPlayer.getProperties().equals("null");
+					 }
 					 turnFinished = true; // finishes turn
 					if(numPlayers <= 1)
 					{
