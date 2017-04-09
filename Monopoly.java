@@ -95,6 +95,7 @@ public class Monopoly {
 		boolean turnFinished = false; // case if the player has entered done 
 		boolean rollDone = false; 	// case if player has yet to roll on their turn
 		boolean negativeBalance = false; // case if the players balance goes negative 
+		int rollCount = 0;
 		do {
 			ui.inputCommand(currPlayer);
 			switch (ui.getCommandId()) {
@@ -115,6 +116,23 @@ public class Monopoly {
 										board.getProperty(currPlayer.getPosition()).isOwned() &&
 										!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
 								} 
+								if(currPlayer.getPosition() == 30)
+								{
+									currPlayer.moveToJail();
+									inJail = true;
+								}
+								
+								if(dice.isDouble())
+								{
+									rollCount = rollCount + 1;
+									
+									if(rollCount >= 3)
+									{
+										currPlayer.moveToJail();
+										inJail = true;
+									}
+	}
+								
 								if (!dice.isDouble()) {
 									rollDone = true;
 								}
