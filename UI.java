@@ -43,6 +43,8 @@ public class UI {
 	public static final int SUPERTAX = 14;
 	public static final int NEGATIVEBALANCE = 15;
 	public static final int ERR_IS_MORTGAGED = 16;
+	public static final int IN_JAIL = 17;
+	public static final int JUST_VISITING = 18;
 	
 
 	private final String[] errorMessages = {
@@ -62,7 +64,9 @@ public class UI {
 		"You have landed on Income Tax and 200  has been deducted from your balance",
 		"You have landed on Super Tax and 100  has been deducted from your balance",
 		"Unable to roll dice or end turn while your balance is negative",
-		"Error: The property has already been mortgaged."
+		"Error: The property has already been mortgaged.",
+		"You are currently in jail, you may pay a fine of 50 or try to roll a double to leave jail",
+		"Only kidding your just visiting"
 	};
 
 	private JFrame frame = new JFrame();
@@ -114,18 +118,9 @@ public class UI {
 		return;
 	}
 	
-	private boolean hasNoArgument (String[] string) {
-		return (string.length == 1);
-	}
-	
 	private boolean hasOneArgument (String[] string) {
 		return (string.length == 2);
-	}	
-
-	private boolean hasTwoArguments (String[] string) {
-		return (string.length ==3);
-}
-	
+	}		
 
 	public void inputCommand (Player player) {
 		boolean inputValid = false;
@@ -154,14 +149,6 @@ public class UI {
 					break;
 				case "buy" :
 					commandId = CMD_BUY;
-					inputValid = true;
-					break;
-				case "pay rent" :
-					commandId = CMD_PAY_RENT; // also dead code 
-					inputValid = true;
-					break;
-				case "auction" :
-					commandId = CMD_AUCTION; // dead code needs to be removed 
 					inputValid = true;
 					break;
 				case "property" :

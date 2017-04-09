@@ -17,8 +17,8 @@ public class Monopoly {
 	int noBuild;
 	int count = 0; // counts number of properties build on a square 
 	private boolean colourOwned = false; // check if entire colour group is owned by one player 
-	boolean inJail = false; 
-	int jailTurn = 1;
+	boolean inJail = false;  // for placing the player in jail
+
 
 	Monopoly () {
 		numPlayers = 0;
@@ -94,8 +94,10 @@ public class Monopoly {
 	public void processTurn () {  // goes through this procedure every turn
 		boolean turnFinished = false; // case if the player has entered done 
 		boolean rollDone = false; 	// case if player has yet to roll on their turn
-		boolean negativeBalance = false; // case if the players balance goes negative 
+		boolean negativeBalance = false;
+		boolean inJail = false; // case if the players balance goes negative 
 		int rollCount = 0;
+	
 		do {
 			ui.inputCommand(currPlayer);
 			switch (ui.getCommandId()) {
@@ -116,37 +118,64 @@ public class Monopoly {
 										board.getProperty(currPlayer.getPosition()).isOwned() &&
 										!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
 								} 
-								if(currPlayer.getPosition() == 30)
-								{
-									currPlayer.moveToJail();
-									inJail = true;
-								}
-								
+				
+				
 								if(dice.isDouble())
 								{
 									rollCount = rollCount + 1;
 									
-									if(rollCount >= 3)
+									if(rollCount >= 3) // player goes in jail in 3 doubles are rolled in one turn
 									{
-										currPlayer.moveToJail();
+										currPlayer.moveToJail(); // call function that moves player to square 10
 										inJail = true;
 									}
-	}
+								}
 								
 								if (!dice.isDouble()) {
 									rollDone = true;
 								}
+								
+								
 							
 						}	else {
 							ui.displayError(UI.ERR_DOUBLE_ROLL);
 						}
 						} // end to if negative balance loop
 					
+						if(currPlayer.getPosition() == 10) // case of player just visiting jail
+						{
+							ui.displayError(UI.JUST_VISITING);
+						}
 					
 						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax is payed immediately 
 						{
 							currPlayer.doTransaction(-200);
 							ui.displayError(UI.INCOMETAX);
+						}
+						
+						
+
+						if(currPlayer.getPosition() == 30) // if player lands on go to jail square 
+						{
+							currPlayer.moveToJail();
+							inJail = true;
+						}
+						
+						if(currPlayer.getPosition() == 10 && inJail == true)
+						{
+							ui.displayError(UI.IN_JAIL);
+						}
+						
+						if(inJail == true && !dice.isDouble()) // if player does not roll double remains in jail
+						{
+							inJail = true;
+							currPlayer.moveToJail();
+							
+						}
+						
+						if(inJail == true && dice.isDouble()) // if player rolls a double may leave jail
+						{
+							inJail = false;
 						}
 						
 						if(((currPlayer.getPosition() == 38)) || currPlayer.getPosition() %40 == 38) // case if player lands on Super tax and tax is payed immediately
@@ -362,13 +391,13 @@ public class Monopoly {
 
 					break;
 					
-				case UI.CMD_MORTGAGE :
+				case UI.CMD_MORTGAGE :  
 					Property property1 = board.getProperty(currPlayer.getPosition());
 					if (property1.isOwned() && property1.getOwner().equals(currPlayer)) {
 						if ((property1 instanceof Property) && !((Property) property1).hasBuildings()) {
 							if (!property1.isMortgaged()) {
 								property1.setMortgaged();
-								currPlayer.doTransaction(+property1.getMortgageValue());
+								currPlayer.doTransaction(+property1.getMortgageValue()); // gets back value of morgagued property 
 								ui.displayMortgage(currPlayer,property1);
 							} else {
 								ui.displayError(UI.ERR_IS_MORTGAGED);
@@ -380,6 +409,10 @@ public class Monopoly {
 						ui.displayError(UI.ERR_IS_OWNED);
 					}
 					break;
+					
+				case UI.CMD_PAY_RELEASE : // fine payed and player released from jail 
+					inJail = false;
+					currPlayer.doTransaction(-50);
 
 				case UI.CMD_DEMOLISH :  // demolish command
 					String temp_4 = ui.buildInput();
