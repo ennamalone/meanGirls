@@ -1,6 +1,8 @@
 
 
 public class Property extends Square {
+	
+	private static final float MORTGAGE_PREMIUM = 1.1f;
 
 	private boolean isOwned;
 	private int value;
@@ -10,6 +12,8 @@ public class Property extends Square {
 	private String colour;
 	private Player owner;
 	private int buildPrice;
+	private boolean mortgaged;
+	private int mortgageValue;
 
 	Property (String name, String colour, int buildPrice, int value, int[] rent) {
 		super(name);
@@ -18,6 +22,7 @@ public class Property extends Square {
 		this.value = value;
 		this.rent = rent;
 		isOwned = false;
+		this.mortgageValue = mortgageValue;
 		return;
 	}
 
@@ -46,6 +51,28 @@ public class Property extends Square {
 		isOwned = true;
 		return;
 	}
+	
+	public void setMortgaged() {
+		mortgaged = true;
+		return;
+	}
+
+	public boolean isMortgaged() {
+		return mortgaged;
+	}
+
+	public void setNotMortgaged() {
+		mortgaged = false;
+		return;
+	}
+
+	public int getMortgageValue() {
+		return mortgageValue;
+	}
+
+	public int getMortgageRemptionPrice () {
+		return (int) (((float) mortgageValue) * MORTGAGE_PREMIUM);
+}
 	
 	
 	///////////////////
@@ -101,4 +128,8 @@ public class Property extends Square {
 		public int getNoOfBuildings(){
 			return buildings;
 		}
+		
+		public boolean hasBuildings () {
+			return buildings > 0;
+}
 	}

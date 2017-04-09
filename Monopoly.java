@@ -8,7 +8,7 @@ public class Monopoly {
 
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private Player currPlayer; // keeps track of which player is playing the game
-	private UI ui = new UI(players); // interacts with UI class
+	private UI ui = new UI(players, null); // interacts with UI class
 	private int numPlayers; // keeps track of number of players to not exceed maximum
 	private Dice dice = new Dice(); // interacts with dice class
 	private boolean gameOver = false; // checks for game end
@@ -17,6 +17,8 @@ public class Monopoly {
 	int noBuild;
 	int count = 0; // counts number of properties build on a square 
 	private boolean colourOwned = false; // check if entire colour group is owned by one player 
+	boolean inJail = false; 
+	int jailTurn = 1;
 
 	Monopoly () {
 		numPlayers = 0;
@@ -165,7 +167,7 @@ public class Monopoly {
 													ui.displayTransaction(currPlayer, owner);
 												}
 												
-												else if(property.getColour().equals("utility")) // if the property the owner lands on is a utility then do as follows
+												else if(currPlayer.getPosition() == 12 || currPlayer.getPosition() == 28) // if the property the owner lands on is a utility then do as follows
 												{
 													currPlayer.doTransaction(-property.getFactoriesOwned());  // rent is set to 4* the dice roll of the player
 													owner.doTransaction(+property.getFactoriesOwned());
@@ -341,6 +343,26 @@ public class Monopoly {
 					}
 
 					break;
+					
+				case UI.CMD_MORTGAGE :
+					Property property1 = board.getProperty(currPlayer.getPosition());
+					if (property1.isOwned() && property1.getOwner().equals(currPlayer)) {
+						if ((property1 instanceof Property) && !((Property) property1).hasBuildings()) {
+							if (!property1.isMortgaged()) {
+								property1.setMortgaged();
+								currPlayer.doTransaction(+property1.getMortgageValue());
+								ui.displayMortgage(currPlayer,property1);
+							} else {
+								ui.displayError(UI.ERR_IS_MORTGAGED);
+							}
+						} else {
+							ui.displayError(UI.ERR_TOO_MANY_BUILDINGS);
+						}
+					} else {
+						ui.displayError(UI.ERR_IS_OWNED);
+					}
+					break;
+
 				case UI.CMD_DEMOLISH :  // demolish command
 					String temp_4 = ui.buildInput();
 					ui.displayString(">" + ui.build);
@@ -424,8 +446,21 @@ public class Monopoly {
 		currPlayer = players.get((players.indexOf(currPlayer) + 1) % players.size());
 		return;
 	}
+	
+		//	public void goToJail()
+		//{
+		//int position = currPlayer.getPosition();
+		//position = 10;
+		//inJail = true;
+		//}
+		
+		//public void leaveJail()
+		//{
+		//inJail = false;
+		//}
 
-	public void decideWinner () {  // once quit is called or if only 1 player renains 
+
+	public void decideWinner () {  // once quit is called or if only 1 player remains 
 		ArrayList<Player> playersWithMostAssets = new ArrayList<Player>();
 		int mostAssets = players.get(0).getAssets();
 		for (Player player : players) {

@@ -32,6 +32,15 @@ public class Player {
 		}
 		return;
 	}
+	
+	public void moveToJail()
+	{
+		position = 10;
+		passedGo = false;
+		
+		return;
+	}
+
 
 	public void doTransaction (int amount) {
 		balance = balance + amount;

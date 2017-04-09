@@ -63,5 +63,34 @@ public class Board {
 	public boolean isProperty (int index) {
 		return squares[index] instanceof Property;
 	}
+	
+
+	public Property getProperty (String shortName) 
+	{
+		Property property = null;
+		for (Square s : squares) {
+			if (s instanceof Property) {
+				Property p = (Property) s;
+				if (p.equals(shortName)) {
+					property = p;
+				}
+			}
+		}
+		return property;
+		}
+	
+	boolean isProperty (String shortName) {
+			boolean found = false;
+			for (Square s :squares) {
+				if (s instanceof Property) {
+					Property p = (Property) s;
+					if (p.equals(shortName)) {	
+						found = true;
+					}
+				}
+			}
+			return found;
+	}
 }
+
 

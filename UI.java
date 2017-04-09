@@ -22,6 +22,9 @@ public class UI {
 	public static final int CMD_HELP = 9;
 	public static final int CMD_BUILD = 10 ;
 	public static final int CMD_DEMOLISH = 11 ;
+	public static final int CMD_MORTGAGE = 12;
+	public static final int CMD_REDEEM = 13;
+	public static final int CMD_PAY_RELEASE = 14;
 
 	public static final int ERR_SYNTAX = 0;
 	public static final int ERR_DOUBLE_ROLL = 1;
@@ -39,6 +42,7 @@ public class UI {
 	public static final int INCOMETAX = 13;
 	public static final int SUPERTAX = 14;
 	public static final int NEGATIVEBALANCE = 15;
+	public static final int ERR_IS_MORTGAGED = 16;
 	
 
 	private final String[] errorMessages = {
@@ -57,7 +61,8 @@ public class UI {
 		"Error: You cannot afford to pay rent.",
 		"You have landed on Income Tax and 200  has been deducted from your balance",
 		"You have landed on Super Tax and 100  has been deducted from your balance",
-		"Unable to roll dice or end turn while your balance is negative"
+		"Unable to roll dice or end turn while your balance is negative",
+		"Error: The property has already been mortgaged."
 	};
 
 	private JFrame frame = new JFrame();
@@ -67,12 +72,17 @@ public class UI {
 	private String string;
 	private boolean done;
 	private int commandId;
+	private Board board;
+	private Property inputProperty;
+	private int inputNumber;
+	private Player inputPlayer;
 	private ArrayList<Property> properties = new ArrayList<Property>();
 
 	public String build;
 	public int buildNo;
 
-	UI (ArrayList<Player> players) {
+	UI (ArrayList<Player> players, Board board) {
+		this.board = board;
 		boardPanel = new BoardPanel(players);
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setTitle("Monopoly");
@@ -103,6 +113,19 @@ public class UI {
 		infoPanel.displayString("> " + string);
 		return;
 	}
+	
+	private boolean hasNoArgument (String[] string) {
+		return (string.length == 1);
+	}
+	
+	private boolean hasOneArgument (String[] string) {
+		return (string.length == 2);
+	}	
+
+	private boolean hasTwoArguments (String[] string) {
+		return (string.length ==3);
+}
+	
 
 	public void inputCommand (Player player) {
 		boolean inputValid = false;
@@ -115,7 +138,8 @@ public class UI {
 			string = string.toLowerCase();
 			string = string.trim();
 			string = string.replaceAll("( )+", " ");
-			switch (string) {
+			String[] words = string.split(" ");
+			switch (words[0]) {
 				case "quit" :
 					commandId = CMD_QUIT;
 					inputValid = true;
@@ -133,11 +157,11 @@ public class UI {
 					inputValid = true;
 					break;
 				case "pay rent" :
-					commandId = CMD_PAY_RENT;
+					commandId = CMD_PAY_RENT; // also dead code 
 					inputValid = true;
 					break;
 				case "auction" :
-					commandId = CMD_AUCTION;
+					commandId = CMD_AUCTION; // dead code needs to be removed 
 					inputValid = true;
 					break;
 				case "property" :
@@ -162,6 +186,31 @@ public class UI {
 					break;
 				case "help" :
 					commandId = CMD_HELP;
+					inputValid = true;
+					break;
+				case "mortgage" :
+					commandId = CMD_MORTGAGE;
+					if(hasOneArgument(words) && board.isProperty(words[1])) { 
+						inputProperty = board.getProperty(words[1]);
+						inputValid = true;
+					} else {
+						inputValid = false;
+					}
+					break;
+				case "redeem" :
+					commandId = CMD_REDEEM;
+					if (hasOneArgument(words) && board.isProperty(words[1]))
+					{ 
+						inputProperty = board.getProperty(words[1]);
+						inputValid = true;
+					}
+					else 
+					{
+						inputValid = false;
+					}
+					break;
+				case "pay fine" :
+					commandId = CMD_PAY_RELEASE;
 					inputValid = true;
 					break;
 
@@ -210,6 +259,18 @@ public class UI {
 	public boolean isDone () {
 		return done;
 	}
+	
+	public Property getInputProperty () {
+		return inputProperty;
+	}
+	
+	public Player getInputPlayer () {
+		return inputPlayer;
+	}
+	
+	public int getInputNumber () {
+		return inputNumber;
+}
 
 
 // OUTPUT METHODS
@@ -348,6 +409,17 @@ public class UI {
 		}
 		return;
 	}
+	
+	public void displayMortgage (Player player, Property property) {
+		infoPanel.displayString(player + " mortgages " + property + " for " + property.getMortgageValue() + CURRENCY);
+		return;				
+	}
+	
+	public void displayMortgageRedemption (Player player, Property property) {
+		infoPanel.displayString(player + " redeems " + property + " for " + property.getMortgageRemptionPrice() + CURRENCY);
+		return;
+}
+	
 
 	public void displayAssets (Player player) {
 		infoPanel.displayString(player + " has assets of " + player.getAssets() + CURRENCY);
