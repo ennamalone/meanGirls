@@ -25,6 +25,7 @@ public class UI {
 	public static final int CMD_MORTGAGE = 12;
 	public static final int CMD_REDEEM = 13;
 	public static final int CMD_PAY_RELEASE = 14;
+	public static final int CMD_GET_OUT_OF_JAIL = 15;
 
 	public static final int ERR_SYNTAX = 0;
 	public static final int ERR_DOUBLE_ROLL = 1;
@@ -45,7 +46,7 @@ public class UI {
 	public static final int ERR_IS_MORTGAGED = 16;
 	public static final int IN_JAIL = 17;
 	public static final int JUST_VISITING = 18;
-	
+
 
 	private final String[] errorMessages = {
 		"Error: Not a valid command.",
@@ -74,6 +75,7 @@ public class UI {
 	private InfoPanel infoPanel = new InfoPanel();
 	private CommandPanel commandPanel = new CommandPanel();
 	private String string;
+	private String communityChest;
 	private boolean done;
 	private int commandId;
 	private Board board;
@@ -117,10 +119,10 @@ public class UI {
 		infoPanel.displayString("> " + string);
 		return;
 	}
-	
+
 	private boolean hasOneArgument (String[] string) {
 		return (string.length == 2);
-	}		
+	}
 
 	public void inputCommand (Player player) {
 		boolean inputValid = false;
@@ -177,7 +179,7 @@ public class UI {
 					break;
 				case "mortgage" :
 					commandId = CMD_MORTGAGE;
-					if(hasOneArgument(words) && board.isProperty(words[1])) { 
+					if(hasOneArgument(words) && board.isProperty(words[1])) {
 						inputProperty = board.getProperty(words[1]);
 						inputValid = true;
 					} else {
@@ -187,11 +189,11 @@ public class UI {
 				case "redeem" :
 					commandId = CMD_REDEEM;
 					if (hasOneArgument(words) && board.isProperty(words[1]))
-					{ 
+					{
 						inputProperty = board.getProperty(words[1]);
 						inputValid = true;
 					}
-					else 
+					else
 					{
 						inputValid = false;
 					}
@@ -200,6 +202,11 @@ public class UI {
 					commandId = CMD_PAY_RELEASE;
 					inputValid = true;
 					break;
+
+				case "get out of jail" :
+					commandId = CMD_GET_OUT_OF_JAIL;
+					inputValid = true;
+				break;
 
 				default:
 					inputValid = false;
@@ -227,6 +234,13 @@ public class UI {
 		return build;
 	}
 
+	public String communityChestInput(){
+		infoPanel.displayString("Enter either pay or chance.\n");
+		commandPanel.inputString();
+		communityChest = commandPanel.getString();
+		return communityChest;
+	}
+
 	public int noBuildInput(){ //input for buildings
 		infoPanel.displayString("Please enter the number of houses you'd like to build/demolish.");
 		commandPanel.inputString();
@@ -246,15 +260,15 @@ public class UI {
 	public boolean isDone () {
 		return done;
 	}
-	
+
 	public Property getInputProperty () {
 		return inputProperty;
 	}
-	
+
 	public Player getInputPlayer () {
 		return inputPlayer;
 	}
-	
+
 	public int getInputNumber () {
 		return inputNumber;
 }
@@ -285,34 +299,34 @@ public class UI {
 		infoPanel.displayString(fromPlayer + " pays " + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
 		return;
 	}
-	
-	public void displayTransaction1 (Player fromPlayer, Player toPlayer) { // accounts for if 2 stations owned 
+
+	public void displayTransaction1 (Player fromPlayer, Player toPlayer) { // accounts for if 2 stations owned
 		infoPanel.displayString(fromPlayer + " pays 2*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
 		return;
 	}
-	
-	public void displayTransaction2 (Player fromPlayer, Player toPlayer) {  // accounts for if 3 stations owned 
+
+	public void displayTransaction2 (Player fromPlayer, Player toPlayer) {  // accounts for if 3 stations owned
 		infoPanel.displayString(fromPlayer + " pays 3*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
 		return;
 	}
 
-	public void displayTransaction3 (Player fromPlayer, Player toPlayer) {  // accounts for if 4 stations owned 
+	public void displayTransaction3 (Player fromPlayer, Player toPlayer) {  // accounts for if 4 stations owned
 		infoPanel.displayString(fromPlayer + " pays 4*" + toPlayer.getTransaction() + CURRENCY + " to " + toPlayer);
 		return;
 	}
-	
-	public void displayTransaction1a (Player fromPlayer, Player toPlayer) {  // accounts for if utility owned 
+
+	public void displayTransaction1a (Player fromPlayer, Player toPlayer) {  // accounts for if utility owned
 		infoPanel.displayString(fromPlayer + " pays 4* dice roll " + " to " + toPlayer);
 		return;
 	}
-	
-	
-	public void displayTransaction1b (Player fromPlayer, Player toPlayer) {  // accounts for if 2 utilities owned 
+
+
+	public void displayTransaction1b (Player fromPlayer, Player toPlayer) {  // accounts for if 2 utilities owned
 		infoPanel.displayString(fromPlayer + " pays 10* dice roll" + " to " + toPlayer);
 		return;
 	}
-	
-	
+
+
 	public void displayDice (Player player, Dice dice) {
 		infoPanel.displayString(player + " rolls " + dice + ".");
 		return;
@@ -358,20 +372,20 @@ public class UI {
 		return;
 	}
 
-	
+
 	public void bankruptme (Player player, Property property, Property setOwner, Player inPlayer, boolean isOwned)  // all that is needed to achieve following
 	{
-		
-		for(int i = 0; i < 30; i++) // goes through players assets and returns them to the bank 
+
+		for(int i = 0; i < 30; i++) // goes through players assets and returns them to the bank
 		{
-		properties.remove(property);  
+		properties.remove(property);
 		 isOwned = false;
 		}
 		infoPanel.displayString(player + "properties owned are returned to bank and player removed from game"); // retuns message to infopanel
 		return;
-		
+
 	}
-	
+
 	public void displayProperty (Player player) {
 		ArrayList<Property> propertyList = player.getProperties();
 		if (propertyList.size() == 0) {
@@ -396,17 +410,17 @@ public class UI {
 		}
 		return;
 	}
-	
+
 	public void displayMortgage (Player player, Property property) {
 		infoPanel.displayString(player + " mortgages " + property + " for " + property.getMortgageValue() + CURRENCY);
-		return;				
+		return;
 	}
-	
+
 	public void displayMortgageRedemption (Player player, Property property) {
 		infoPanel.displayString(player + " redeems " + property + " for " + property.getMortgageRemptionPrice() + CURRENCY);
 		return;
 }
-	
+
 
 	public void displayAssets (Player player) {
 		infoPanel.displayString(player + " has assets of " + player.getAssets() + CURRENCY);

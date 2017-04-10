@@ -8,6 +8,7 @@ public class Player {
 	private int amount;
 	private String token;
 	private boolean passedGo;
+  private boolean getOutOfJailCard;
 	private ArrayList<Property> properties = new ArrayList<Property>();
 
 	Player (String name, String token) {
@@ -16,6 +17,7 @@ public class Player {
 		position = 0;
 		balance = 0;
 		passedGo = false;
+    getOutOfJailCard = false;
 		return;
 	}
 
@@ -32,15 +34,31 @@ public class Player {
 		}
 		return;
 	}
-	
+
 	public void moveToJail()
 	{
 		position = 10;
 		passedGo = false;
-		
+
 		return;
 	}
 
+  public void getOutOfJailCard()
+  {
+    getOutOfJailCard = true;
+    return;
+  }
+
+  public Boolean hasGetOutOfJailCard()
+  {
+    return getOutOfJailCard;
+  }
+
+  public void useGetOutOfJailCard()
+  {
+    getOutOfJailCard = false;
+    return;
+  }
 
 	public void doTransaction (int amount) {
 		balance = balance + amount;
@@ -50,6 +68,11 @@ public class Player {
 
 	public int getPosition () {
 		return position;
+	}
+
+  public void setPosition (int i) {
+		position = i;
+    return;
 	}
 
 	public String getName () {
@@ -84,6 +107,10 @@ public class Player {
 
 	public String getPropertyName (int i) {
 		return properties.get(i).getName();
+	}
+
+  public int getNoBuilds (int i) {
+		return properties.get(i).getNoOfBuildings();
 	}
 
 	public String getPropertyColour(int i){
