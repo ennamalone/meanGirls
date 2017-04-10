@@ -1,112 +1,135 @@
-// Énna Malone 15357146
-// Brian Finlay 15381151
-// Cian Kelly 15386256
 
-public class property
-{
-	//sets 2 array to be called consisting of name and the price of the property
 
-	String[] playersProperty()
-	{
-		String player1[] = new String [40];
-//		String player2[] = new String [40];
-//		String player3[] = new String [40];
-//		String player4[] = new String [40];
-//		String player5[] = new String [40];
-//		String player6[] = new String [40];
-		return player1; // need to return others 
-	}
-	
-	String[] propertyname()
-	{
-		String prop[] = new String[40];
-		prop[0] = "Go square";
-		prop[1] = "Old Kent Road";
-		prop[2] = "Community Chect";
-		prop[3] = "Whitechapel";
-		prop[4] = "Income Tax";
-		prop[5] = "King's Cross Station";
-		prop[6] = "The Angel Islington";
-		prop[7] = "Chance";
-		prop[8] = "Euston Road";
-		prop[9] = "Pentonville Road";
-		prop[10] = "Jail(jsut visiting)";
-		prop[11] = "Pall Mall";
-		prop[12] = "Electric Company";
-		prop[13] = "Whitehall";
-		prop[14] = "Northumberland Avenue";
-		prop[15] = "Marlylebone Station";
-		prop[16] = "Bow Street";
-		prop[17] = "Communtiy Chest";
-		prop[18] = "Marlborough Street";
-		prop[19] = "Vine Street";
-		prop[20] = "Free Parking";
-		prop[21] = "Strand";
-		prop[22] = "Chance";
-		prop[23] = "Fleet Street";
-		prop[24] = "Trafalgar Square";
-		prop[25] = "Fenchurch Street Station";
-		prop[26] = "Leicester Square";
-		prop[27] = "Coventry Street";
-		prop[28] = "Water Works";
-		prop[29] = "Piccadily";
-		prop[30] = "Go to jail";
-		prop[31] = "Regent Street";
-		prop[32] = "Oxford Street";
-		prop[33] = "Community Chest";
-		prop[34] = "Bond Street";
-		prop[35] = "Liverpool Street Station";
-		prop[36] = "Chance";
-		prop[37] = "Park Lane";
-		prop[38] = "Super Tax";
-		prop[39] = "Mayfair";
-		return prop;
+public class Property extends Square {
+
+	private static final float MORTGAGE_PREMIUM = 1.1f;
+
+	private boolean isOwned;
+	private int value;
+	private int rent[];
+	private Dice dice = new Dice();
+	private int buildings;
+	private String colour;
+	private Player owner;
+	private int buildPrice;
+	private boolean mortgaged;
+	private int mortgageValue;
+
+	Property (String name, String colour, int buildPrice, int value, int[] rent) {
+		super(name);
+		this.colour = colour;
+		this.buildPrice = buildPrice;
+		this.value = value;
+		this.rent = rent;
+		isOwned = false;
+		this.mortgageValue = mortgageValue;
+		return;
 	}
 
-	int[] property1()
-	{
-		int proprice[] = new int[40];
-		proprice[0] = 200;
-		proprice[1] = 60;
-		proprice[2] = 0;
-		proprice[3] = 60;
-		proprice[4] = 200;
-		proprice[5] = 200;
-		proprice[6] = 100;
-		proprice[7] = 0;
-		proprice[8] = 100;
-		proprice[9] = 120;
-		proprice[10] = 0;
-		proprice[11] = 140;
-		proprice[12] = 150;
-		proprice[13] = 140;
-		proprice[14] = 160;
-		proprice[15] = 200;
-		proprice[16] = 180;
-		proprice[17] = 0;
-		proprice[18] = 180;
-		proprice[19] = 200;
-		proprice[20] = 0;
-		proprice[21] = 220;
-		proprice[22] = 0;
-		proprice[23] = 220;
-		proprice[24] = 240;
-		proprice[25] = 200;
-		proprice[26] = 260;
-		proprice[27] = 260;
-		proprice[28] = 150;
-		proprice[29] = 280;
-		proprice[30] = 0;
-		proprice[31] = 300;
-		proprice[32] = 300;
-		proprice[33] = 0;
-		proprice[34] = 320;
-		proprice[35] = 200;
-		proprice[36] = 0;
-		proprice[37] = 350;
-		proprice[38] = 100;
-		proprice[39] = 400;
-
-		return proprice;
+	public int getBuildPrice(){
+		return buildPrice;
 	}
+
+	public int getValue () {
+		return value;
+	}
+
+	public int getRent () {
+		return rent[0];
+	}
+
+	public String getColour() {
+		return colour;
+	}
+
+	public boolean isOwned () {
+		return isOwned;
+	}
+
+	public void setOwner (Player inPlayer) {
+		owner = inPlayer;
+		isOwned = true;
+		return;
+	}
+
+	public void setMortgaged() {
+		mortgaged = true;
+		return;
+	}
+
+	public boolean isMortgaged() {
+		return mortgaged;
+	}
+
+	public void setNotMortgaged() {
+		mortgaged = false;
+		return;
+	}
+
+	public int getMortgageValue() {
+		return mortgageValue;
+	}
+
+	public int getMortgageRemptionPrice () {
+		return (int) (((float) mortgageValue) * MORTGAGE_PREMIUM);
 }
+
+
+	///////////////////
+	public int getRentColourGroup()
+	{  // returns rent if all colour group owned by single player
+	return 2*(rent[0]);
+	}
+
+	public int get1StationsOwned() { // rent if single players owns another station
+	return 2*(rent[0]);
+	}
+
+	public int get2StationsOwned() { // rent if single players owns another 3 stations
+	return 3*(rent[0]);
+	}
+
+	public int get3StationsOwned() { // rent if single players owns all the stations
+	return 4*(rent[0]);
+	}
+
+
+	public int getFactoriesOwned(){  // case of one player owns both factories
+	return 4*(dice.getTotal());
+	}
+
+	public int get2FactoriesOwned(){  // case of one player owns both factories
+		return 10*(dice.getTotal());
+		}
+
+
+		public Player getOwner () {
+			return owner;
+		}
+
+		public int addBuidings(int noOfBuilds){
+
+			if(buildings >= 5)
+			{
+				return UI.ERR_TOO_MANY_BUILDINGS; // if a hotel has already been constructed
+			}
+			else
+			{
+				buildings += noOfBuilds;
+				return buildings;
+			}
+		}
+
+		public int demolishBuidings(int noOfBuilds){
+			buildings -= noOfBuilds;
+			return buildings;
+		}
+
+		public int getNoOfBuildings(){
+			return buildings;
+		}
+
+		public boolean hasBuildings () {
+			return buildings > 0;
+}
+	}
