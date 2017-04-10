@@ -8,7 +8,8 @@ public class Player {
 	private int amount;
 	private String token;
 	private boolean passedGo;
-  private boolean getOutOfJailCard;
+	boolean inJail = false;
+	private boolean getOutOfJailCard;
 	private ArrayList<Property> properties = new ArrayList<Property>();
 
 	Player (String name, String token) {
@@ -17,7 +18,7 @@ public class Player {
 		position = 0;
 		balance = 0;
 		passedGo = false;
-    getOutOfJailCard = false;
+		getOutOfJailCard = false;
 		return;
 	}
 
@@ -34,47 +35,48 @@ public class Player {
 		}
 		return;
 	}
-
-	public void moveToJail()
+	
+	public void moveToJail()  // move to jail from chance cards 
 	{
 		position = 10;
 		passedGo = false;
-
+		inJail = true;
+		
 		return;
 	}
+	
+	 public void getOutOfJailCard() // obtain said card 
+	  {
+	    getOutOfJailCard = true;
+	    return;
+	  }
 
-  public void getOutOfJailCard()
-  {
-    getOutOfJailCard = true;
-    return;
-  }
+	  public Boolean hasGetOutOfJailCard()
+	  {
+	    return getOutOfJailCard;
+	  }
 
-  public Boolean hasGetOutOfJailCard()
-  {
-    return getOutOfJailCard;
-  }
-
-  public void useGetOutOfJailCard()
-  {
-    getOutOfJailCard = false;
-    return;
-  }
+	  public void useGetOutOfJailCard() // using said card 
+	  {
+	    getOutOfJailCard = false;
+	    return;
+	}
 
 	public void doTransaction (int amount) {
 		balance = balance + amount;
 		this.amount = amount;
 		return;
 	}
-
+	
 	public int getPosition () {
 		return position;
 	}
 
-  public void setPosition (int i) {
+	public void setPosition (int i) {
 		position = i;
     return;
 	}
-
+	
 	public String getName () {
 		return name;
 	}
@@ -109,10 +111,10 @@ public class Player {
 		return properties.get(i).getName();
 	}
 
-  public int getNoBuilds (int i) {
-		return properties.get(i).getNoOfBuildings();
+	  public int getNoBuilds (int i) {
+			return properties.get(i).getNoOfBuildings();
 	}
-
+	  
 	public String getPropertyColour(int i){
 		return properties.get(i).getColour();
 	}

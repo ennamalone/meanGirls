@@ -15,10 +15,10 @@ public class Monopoly {
 	private boolean gameOver = false; // checks for game end
 	private Board board = new Board(); // interacts with board class
 	String prop;
-	int noBuild;
 	String temp_6;
-	int count = 0; // counts number of properties build on a square
-	private boolean colourOwned = false; // check if entire colour group is owned by one player
+	int noBuild;
+	int count = 0; // counts number of properties build on a square 
+	private boolean colourOwned = false; // check if entire colour group is owned by one player 
 	boolean inJail = false;  // for placing the player in jail
 
 
@@ -28,7 +28,7 @@ public class Monopoly {
 		return;
 	}
 
-	public void inputNames () {  // mechanism for gathering players name and assigned them staring funds
+	public void inputNames () {  // mechanism for gathering players name and assigned them staring funds 
 		do {
 			ui.inputName(numPlayers);
 			if (!ui.isDone()) {
@@ -81,7 +81,7 @@ public class Monopoly {
 					selectedPlayers.add(p);
 				}
 			}
-			if (tie) { // case of highest roll ends in a tie
+			if (tie) { // case of highest roll ends in a tie 
 				ui.displayRollDraw();
 				inPlayers = new ArrayList<Player>(selectedPlayers);
 				selectedPlayers.clear();
@@ -94,12 +94,11 @@ public class Monopoly {
 	}
 
 	public void processTurn () {  // goes through this procedure every turn
-		boolean turnFinished = false; // case if the player has entered done
+		boolean turnFinished = false; // case if the player has entered done 
 		boolean rollDone = false; 	// case if player has yet to roll on their turn
-		boolean negativeBalance = false;
-		boolean inJail = false; // case if the players balance goes negative
+		boolean negativeBalance = false; // case if the players balance goes negative 
 		int rollCount = 0;
-
+	
 		do {
 			ui.inputCommand(currPlayer);
 			switch (ui.getCommandId()) {
@@ -119,75 +118,101 @@ public class Monopoly {
 								if (board.isProperty(currPlayer.getPosition()) &&
 										board.getProperty(currPlayer.getPosition()).isOwned() &&
 										!board.getProperty(currPlayer.getPosition()).getOwner().equals(currPlayer) ) {
-								}
-
-
+								} 
+				
+				
 								if(dice.isDouble())
 								{
 									rollCount = rollCount + 1;
-
+									
 									if(rollCount >= 3) // player goes in jail in 3 doubles are rolled in one turn
 									{
-										currPlayer.moveToJail(); // call function that moves player to square 10
 										inJail = true;
+										currPlayer.moveToJail(); // call function that moves player to square 10
+										rollDone = true;
 									}
 								}
-
-								if (!dice.isDouble()) {
+								
+								if (!dice.isDouble())
+								{
 									rollDone = true;
 								}
-
-
-
+								
+								
+							
 						}	else {
 							ui.displayError(UI.ERR_DOUBLE_ROLL);
 						}
 						} // end to if negative balance loop
-
+					
 						if(currPlayer.getPosition() == 10) // case of player just visiting jail
 						{
 							ui.displayError(UI.JUST_VISITING);
 						}
-
-						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax is payed immediately
+					
+						if(((currPlayer.getPosition() == 4)) || currPlayer.getPosition() %40 == 4) // case if player lands on Income tax and tax is payed immediately 
 						{
 							currPlayer.doTransaction(-200);
 							ui.displayError(UI.INCOMETAX);
 						}
-
-						if (currPlayer.getPosition() == (2 | 17 | 33))
+						
+						if (currPlayer.getPosition() == 2 || currPlayer.getPosition() == 17 || currPlayer.getPosition() == 33) // case if player land on community chest square
 						{
-							getCommunityChest();
+							getCommunityChest();  
 						}
 
-						if (currPlayer.getPosition() == (7 | 22 | 36))
+						if (currPlayer.getPosition() == 7 || currPlayer.getPosition() == 22 || currPlayer.getPosition() == 36) // case if player land on chance square
 						{
 							getChance();
-						}
+}
 
-						if(currPlayer.getPosition() == 30) // if player lands on go to jail square
+						if(currPlayer.getPosition() == 30) // if player lands on go to jail square 
 						{
-							currPlayer.moveToJail();
 							inJail = true;
+							currPlayer.moveToJail();
+							rollDone = true;
 						}
-
+						
 						if(currPlayer.getPosition() == 10 && inJail == true)
 						{
 							ui.displayError(UI.IN_JAIL);
 						}
-
-						if(inJail == true && !dice.isDouble()) // if player does not roll double remains in jail
+						
+						
+						if(inJail == true) // if player does not roll double remains in jail
 						{
-							inJail = true;
-							currPlayer.moveToJail();
-
+							
+							if(dice.isDouble())
+							{
+								inJail = false;
+								rollDone = false;
+						
+							}
+							
+							else if(currPlayer.hasGetOutOfJailCard() == true) // case if player holds get out of jail free card
+							{
+								inJail = false;
+								rollDone = false;
+							}
+							
+							else if(!dice.isDouble())
+							{
+								inJail = true;
+								currPlayer.moveToJail();
+								currPlayer.move(0); // may not need
+								ui.displayError(UI.ROLL_DOUBLE);
+								
+							}
+							
+							
 						}
-
+						
 						if(inJail == true && dice.isDouble()) // if player rolls a double may leave jail
 						{
 							inJail = false;
+						
 						}
-
+						
 						if(((currPlayer.getPosition() == 38)) || currPlayer.getPosition() %40 == 38) // case if player lands on Super tax and tax is payed immediately
 						{
 							currPlayer.doTransaction(-100);
@@ -202,121 +227,123 @@ public class Monopoly {
 								{
 									negativeBalance = false;
 								}
-
-							if (board.isProperty(currPlayer.getPosition())) {  // sets tax to be paid automatically with no player input unless their balance is negative
+							
+							if (board.isProperty(currPlayer.getPosition())) {  // sets tax to be paid automatically with no player input unless their balance is negative 
 								Property property = board.getProperty(currPlayer.getPosition());
 								if (property.isOwned()) {
 									if (!property.getOwner().equals(currPlayer)) {
+										
 											if (currPlayer.getBalance()>=property.getRent()) {
 												Player owner = property.getOwner();
-
+												
 												if(!property.getColour().equals("station") || !property.getColour().equals("utility"))
 												{
 													currPlayer.doTransaction(-property.getRent());
 													owner.doTransaction(+property.getRent());
 													ui.displayTransaction(currPlayer, owner);
 												}
-
+									
 												else if(property.getColour().equals("station"))  // if the property the owner lands on is a station then do as follows
 												{
 													currPlayer.doTransaction(-property.getRent());
 													owner.doTransaction(+property.getRent());
 													ui.displayTransaction(currPlayer, owner);
 												}
-
+												
 												else if(currPlayer.getPosition() == 12 || currPlayer.getPosition() == 28) // if the property the owner lands on is a utility then do as follows
 												{
 													currPlayer.doTransaction(-property.getFactoriesOwned());  // rent is set to 4* the dice roll of the player
 													owner.doTransaction(+property.getFactoriesOwned());
 													ui.displayTransaction1a(currPlayer, owner);
 												}
-
-
-												// check the player property owned list to see what other properties owner of current square owns
-
+												
+												
+												// check the player property owned list to see what other properties owner of current square owns 
+												
 												else if( property.getColour().equals("station") && owner.getProperties().equals("Water Works") && owner.getProperties().equals("Electric Co"))
 												{
 													currPlayer.doTransaction(-property.get2FactoriesOwned()); // rent is set to 10* the dice roll of player as owner owns 2 utilities
 													owner.doTransaction(+property.get2FactoriesOwned());
 													ui.displayTransaction1b(currPlayer, owner);
 												}
-
+											
 												else if(property.getColour().equals("station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned()); // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
 													ui.displayTransaction1(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
 													ui.displayTransaction1(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
 													ui.displayTransaction1(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station"))
 												{
 													currPlayer.doTransaction(-property.get1StationsOwned());  // rent is double ordinary due to owner owning 2 stations
 													owner.doTransaction(+property.get1StationsOwned());
 													ui.displayTransaction1(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());  // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
 													ui.displayTransaction2(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
 													ui.displayTransaction2(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("Marylebone Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Marylebone Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
 													ui.displayTransaction2(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Liverpool St Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("King's Cross Station") || owner.getProperties().equals("Marylebone Station") && owner.getProperties().equals("Femchurch St Station") && owner.getProperties().equals("Liverpool St Station"))
 												{
 													currPlayer.doTransaction(-property.get2StationsOwned());   // rent is 3* ordinary due to owner owning 3 stations
 													owner.doTransaction(+property.get2StationsOwned());
 													ui.displayTransaction2(currPlayer, owner);
 												}
-
+												
 												else if(property.getColour().equals("station") && owner.getProperties().equals("Liverpool St Station") && owner.getProperties().equals("King's Cross Station") && owner.getProperties().equals("Marylebone Station")  && owner.getProperties().equals("Femchurch St Station"))
 												{
 													currPlayer.doTransaction(-property.get3StationsOwned());   // rent is 4* ordinary due to owner owning all 4 stations
 													owner.doTransaction(+property.get3StationsOwned());
 													ui.displayTransaction3(currPlayer, owner);
 												}
-
+											
+												
 										} else {
-											ui.displayError(UI.ERR_BANKRUPT);
-											}
-
+											ui.displayError(UI.ERR_BANKRUPT);										
+											} 
+										
 									} else {
-										ui.displayError(UI.ERR_SELF_OWNED);
+										ui.displayError(UI.ERR_SELF_OWNED);								
 									}
 								}
 							} else {
 								ui.displayError(UI.ERR_NOT_A_PROPERTY);
 							}
 					break;
-
+					
 				case UI.CMD_BUY :
 					if (board.isProperty(currPlayer.getPosition())) {  // if player wishes to buy the square they land on
 						Property property = board.getProperty(currPlayer.getPosition());
@@ -343,7 +370,7 @@ public class Monopoly {
 				case UI.CMD_HELP :  // player requires help
 					ui.displayCommandHelp();
 					break;
-				case UI.CMD_DONE : // moves onto the next players turn
+				case UI.CMD_DONE : // moves onto the next players turn 
 					if (rollDone) {
 						if(!negativeBalance){  // if a players balance is negative they will no be allowed end their turn
 							turnFinished = true;
@@ -354,8 +381,8 @@ public class Monopoly {
 						ui.displayError(UI.ERR_NO_ROLL);
 					}
 					break;
-
-
+					
+					
 				case UI.CMD_BUILD : // build command
 					String temp_2 = ui.buildInput();
 					ui.displayString(">" + ui.build);
@@ -400,14 +427,14 @@ public class Monopoly {
 					}
 
 					break;
-
-				case UI.CMD_MORTGAGE :
+					
+				case UI.CMD_MORTGAGE :  
 					Property property1 = board.getProperty(currPlayer.getPosition());
 					if (property1.isOwned() && property1.getOwner().equals(currPlayer)) {
 						if ((property1 instanceof Property) && !((Property) property1).hasBuildings()) {
 							if (!property1.isMortgaged()) {
 								property1.setMortgaged();
-								currPlayer.doTransaction(+property1.getMortgageValue()); // gets back value of morgagued property
+								currPlayer.doTransaction(+property1.getMortgageValue()); // gets back value of morgagued property 
 								ui.displayMortgage(currPlayer,property1);
 							} else {
 								ui.displayError(UI.ERR_IS_MORTGAGED);
@@ -419,10 +446,12 @@ public class Monopoly {
 						ui.displayError(UI.ERR_IS_OWNED);
 					}
 					break;
-
-				case UI.CMD_PAY_RELEASE : // fine payed and player released from jail
+					
+				case UI.CMD_PAY_RELEASE : // fine payed and player released from jail 
 					inJail = false;
 					currPlayer.doTransaction(-50);
+					rollDone = false;
+					break;
 
 				case UI.CMD_DEMOLISH :  // demolish command
 					String temp_4 = ui.buildInput();
@@ -434,7 +463,7 @@ public class Monopoly {
 					{
 						if(temp_5 > 5)
 						{
-							ui.displayString("You can't demolish that many buildings."); // all buildings already demolished
+							ui.displayString("You can't demolish that many buildings."); // all buildings already demolished 
 							break;
 						}
 						else if((property_1.getNoOfBuildings() >= 0)&&(property_1.getNoOfBuildings() > temp_5))
@@ -473,32 +502,16 @@ public class Monopoly {
 					{
 						property_1.demolishBuidings(temp_5);
 						ui.displayString("> " + property_1.getNoOfBuildings());
-						currPlayer.doTransaction((temp_5 * property_1.getBuildPrice())/2);  // returns money raised from demolisition to the player
+						currPlayer.doTransaction((temp_5 * property_1.getBuildPrice())/2);  // returns money raised from demolisition to the player 
 						ui.displayString("> Bank balance:" + currPlayer.getBalance());
 					}
 
 					break;
-
-				case UI.CMD_GET_OUT_OF_JAIL :
-					if(currPlayer.hasGetOutOfJailCard()&&inJail)
-					{
-						currPlayer.useGetOutOfJailCard();
-						inJail = false;
-					}
-					else if(!currPlayer.hasGetOutOfJailCard())
-					{
-						ui.displayString("You don't have a get out of jail card.\n");
-					}
-					else if(!inJail)
-					{
-						ui.displayString("You aren't in jail.\n");
-					}
-				break;
 				case UI.CMD_QUIT :
 					turnFinished = true;
 					gameOver = true;
 					break;
-
+					
 				case UI.CMD_BANKRUPT : // case if bankrupt command entered
 					 ui.bankruptme(currPlayer, null, null, currPlayer, negativeBalance); // done to match player configuration
 					 players.remove(currPlayer); // removes the player form the game
@@ -510,7 +523,7 @@ public class Monopoly {
 					 turnFinished = true; // finishes turn
 					if(numPlayers <= 1)
 					{
-						turnFinished = true; // if only one player left once bankruptcy declared calculates winner
+						turnFinished = true; // if only one player left once bankruptcy declared calculates winner 
 						gameOver = true;
 					 }
 					break;
@@ -523,21 +536,21 @@ public class Monopoly {
 		currPlayer = players.get((players.indexOf(currPlayer) + 1) % players.size());
 		return;
 	}
-
+	
 		//	public void goToJail()
 		//{
 		//int position = currPlayer.getPosition();
 		//position = 10;
 		//inJail = true;
 		//}
-
+		
 		//public void leaveJail()
 		//{
 		//inJail = false;
 		//}
 
 
-	public void decideWinner () {  // once quit is called or if only 1 player remains
+	public void decideWinner () {  // once quit is called or if only 1 player remains 
 		ArrayList<Player> playersWithMostAssets = new ArrayList<Player>();
 		int mostAssets = players.get(0).getAssets();
 		for (Player player : players) {
@@ -546,7 +559,7 @@ public class Monopoly {
 				playersWithMostAssets.clear();
 				playersWithMostAssets.add(player);
 			} else if (player.getAssets() == mostAssets) {
-				playersWithMostAssets.add(player);  // calculates total assets add to players remaining bank balance
+				playersWithMostAssets.add(player);  // calculates total assets add to players remaining bank balance 
 			}
 		}
 		if (playersWithMostAssets.size() == 1) {
@@ -565,8 +578,9 @@ public class Monopoly {
 	public boolean isGameOver () {
 		return gameOver;
 	}
+	
 
-	public void getCommunityChest(){
+	public void getCommunityChest(){ // gets a random card from community chest and implements it 
 
     Random number_1 = new Random();
     int chooseCard_1 = number_1.nextInt(10-0) + 0;
@@ -590,67 +604,67 @@ public class Monopoly {
         break;
 
         case 3:
-          ui.displayString("Pay hospital fees of Â£100.\n");
+          ui.displayString("Pay hospital fees of £100.\n");
           currPlayer.doTransaction(-100);
 					ui.displayBalance(currPlayer);
 				break;
 
         case 4:
-          ui.displayString("Doctor's fees of Â£50.\n");
+          ui.displayString("Doctor's fees of £50.\n");
           currPlayer.doTransaction(-50);
           ui.displayBalance(currPlayer);
         break;
 
         case 5:
-          ui.displayString("Pay your insurance premium of Â£50.\n");
+          ui.displayString("Pay your insurance premium of £50.\n");
           currPlayer.doTransaction(-50);
           ui.displayBalance(currPlayer);
         break;
 
         case 6:
-          ui.displayString("Bank error in you favour. Collect Â£200.\n");
+          ui.displayString("Bank error in you favour. Collect £200.\n");
           currPlayer.doTransaction(+200);
           ui.displayBalance(currPlayer);
         break;
 
         case 7:
-          ui.displayString("Annuity Matures. Collect Â£100.\n");
+          ui.displayString("Annuity Matures. Collect £100.\n");
           currPlayer.doTransaction(+100);
           ui.displayBalance(currPlayer);
         break;
 
         case 8:
-          ui.displayString("You inherit Â£100.\n");
+          ui.displayString("You inherit £100.\n");
           currPlayer.doTransaction(+100);
           ui.displayBalance(currPlayer);
         break;
 
         case 9:
-          ui.displayString("From sale of stock you get Â£50.\n");
+          ui.displayString("From sale of stock you get £50.\n");
           currPlayer.doTransaction(+50);
           ui.displayBalance(currPlayer);
         break;
 
         case 10:
-          ui.displayString("Receive interest on 7% preference shares: Â£25.\n");
+          ui.displayString("Receive interest on 7% preference shares: £25.\n");
           currPlayer.doTransaction(+25);
           ui.displayBalance(currPlayer);
         break;
 
         case 11:
-          ui.displayString("Income tax refund. Collect Â£20.\n");
+          ui.displayString("Income tax refund. Collect £20.\n");
           currPlayer.doTransaction(+25);
         	ui.displayBalance(currPlayer);
         break;
 
         case 12:
-          ui.displayString("You have won second prize in a beauty contest. Collect Â£10.\n");
+          ui.displayString("You have won second prize in a beauty contest. Collect £10.\n");
           currPlayer.doTransaction(+10);
           ui.displayBalance(currPlayer);
         break;
 
         case 13:
-          ui.displayString("It is your birthday. Collect Â£10 from each player.\n");
+          ui.displayString("It is your birthday. Collect £10 from each player.\n");
           currPlayer.doTransaction(+10);
 					ui.displayBalance(currPlayer);
 			break;
@@ -661,7 +675,7 @@ public class Monopoly {
         break;
 
         case 15:
-					ui.displayString("Pay a Â£10 fine or take a Chance.\n");
+					ui.displayString("Pay a £10 fine or take a Chance.\n");
 					temp_6 = ui.communityChestInput();
 					if(temp_6.toLowerCase().equals("pay"))
 					{
@@ -680,10 +694,10 @@ public class Monopoly {
       }
 		}
 
-			public void getChance(){
+			public void getChance(){ // gets a random card from chance and implements it 
 
 		    Random number = new Random();
-		    int chooseCard = number.nextInt(10-0) + 0;
+		    int chooseCard = number.nextInt(10-0) + 0; // gets random card
 
 		      switch(chooseCard){
 
@@ -693,13 +707,13 @@ public class Monopoly {
 		        break;
 
 		        case 1:
-		          ui.displayString("Go to jail. Move directly to jail. Do not pass Go. Do not collect Â£200.\n");
+		          ui.displayString("Go to jail. Move directly to jail. Do not pass Go. Do not collect £200.\n");
 		          inJail = true;
 							currPlayer.moveToJail();
 		        break;
 
 		        case 2:
-							ui.displayString("Advance to Pall Mall. If you pass Go collect Â£200.\n");
+							ui.displayString("Advance to Pall Mall. If you pass Go collect £200.\n");
 							currPlayer.setPosition(11);
 							if(currPlayer.getPosition() > 11)
 							{
@@ -710,7 +724,7 @@ public class Monopoly {
 		        break;
 
 		        case 3:
-		          ui.displayString("Take a trip to Marylebone Station and if you pass Go collect Â£200.\n");
+		          ui.displayString("Take a trip to Marylebone Station and if you pass Go collect £200.\n");
 							currPlayer.setPosition(15);
 							if(currPlayer.getPosition() > 15)
 							{
@@ -720,7 +734,7 @@ public class Monopoly {
 		        break;
 
 		        case 4:
-							ui.displayString("Advance to Trafalgar Square. If you pass Go collect Â£200.\n");
+							ui.displayString("Advance to Trafalgar Square. If you pass Go collect £200.\n");
 							currPlayer.setPosition(24);
 							if(currPlayer.getPosition() > 24)
 							{
@@ -741,8 +755,8 @@ public class Monopoly {
 		        break;
 
 		        case 7:
-		          ui.displayString("Make general repairs on all of your houses. For each house pay Â£25. For each hotel pay Â£100.\n");
-							for(int a; a < currPlayer.getPropertySize(); a++)
+		          ui.displayString("Make general repairs on all of your houses. For each house pay £25. For each hotel pay £100.\n");
+							for(int a = 0; a < currPlayer.getPropertySize(); a++)
 							{
 								if((currPlayer.getNoBuilds(a) > 0)&&(currPlayer.getNoBuilds(a) < 5))
 								{
@@ -759,7 +773,7 @@ public class Monopoly {
 		        break;
 
 		        case 8:
-							for(int b; b < currPlayer.getPropertySize(); b++)
+							for(int b = 0; b < currPlayer.getPropertySize(); b++)
 							{
 								if((currPlayer.getNoBuilds(b) > 0)&&(currPlayer.getNoBuilds(b) < 5))
 								{
@@ -776,37 +790,37 @@ public class Monopoly {
 		        break;
 
 		        case 9:
-		          ui.displayString("Pay school fees of Â£150.\n");
+		          ui.displayString("Pay school fees of £150.\n");
 		          currPlayer.doTransaction(-150);
 		          ui.displayBalance(currPlayer);
 		        break;
 
 		        case 10:
-		          ui.displayString("Drunk in charge fine Â£20.\n");
+		          ui.displayString("Drunk in charge fine £20.\n");
 		          currPlayer.doTransaction(-20);
 		          ui.displayBalance(currPlayer);
 		        break;
 
 		        case 11:
-		          ui.displayString("Speeding fine Â£15.\n");
+		          ui.displayString("Speeding fine £15.\n");
 		          currPlayer.doTransaction(-15);
 		          ui.displayBalance(currPlayer);;
 		        break;
 
 		        case 12:
-		          ui.displayString("Your building loan matures. Receive Â£150.\n");
+		          ui.displayString("Your building loan matures. Receive £150.\n");
 		          currPlayer.doTransaction(+150);
 		          ui.displayBalance(currPlayer);
 		        break;
 
 		        case 13:
-		          ui.displayString("You have won a crossword competition. Collect Â£100.\n");
+		          ui.displayString("You have won a crossword competition. Collect £100.\n");
 		          currPlayer.doTransaction(+100);
 		         ui.displayBalance(currPlayer);
 		        break;
 
 		        case 14:
-							ui.displayString("Bank pays you dividend of Â£50.\n");
+							ui.displayString("Bank pays you dividend of £50.\n");
 							currPlayer.doTransaction(+50);
 							ui.displayBalance(currPlayer);
 		        break;
@@ -821,3 +835,6 @@ public class Monopoly {
 				}
 
 }
+
+
+
