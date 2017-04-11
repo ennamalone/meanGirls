@@ -1,3 +1,6 @@
+// Énna Malone 15357146
+// Cian Kelly 15386256
+// Brian Finlay 15381151 
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
@@ -181,12 +184,8 @@ public class UI {
 					break;
 				case "mortgage" :
 					commandId = CMD_MORTGAGE;
-					if(hasOneArgument(words) && board.isProperty(words[1])) { 
-						inputProperty = board.getProperty(words[1]);
-						inputValid = true;
-					} else {
-						inputValid = false;
-					}
+					inputValid = true;
+					
 					break;
 				case "redeem" :
 					commandId = CMD_REDEEM;

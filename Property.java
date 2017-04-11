@@ -1,4 +1,6 @@
-
+// Énna Malone 15357146
+// Cian Kelly 15386256
+// Brian Finlay 15381151 
 
 public class Property extends Square {
 	
@@ -15,7 +17,7 @@ public class Property extends Square {
 	private boolean mortgaged;
 	private int mortgageValue;
 
-	Property (String name, String colour, int buildPrice, int value, int[] rent) {
+	Property (String name, String colour, int buildPrice, int value, int[] rent, int mortgageValue) {
 		super(name);
 		this.colour = colour;
 		this.buildPrice = buildPrice;

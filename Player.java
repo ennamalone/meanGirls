@@ -1,4 +1,8 @@
- import java.util.ArrayList;
+// Énna Malone 15357146
+// Cian Kelly 15386256
+// Brian Finlay 15381151 
+
+import java.util.ArrayList;
 
 public class Player {
 

@@ -1,3 +1,7 @@
+// Énna Malone 15357146
+// Cian Kelly 15386256
+// Brian Finlay 15381151 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -12,7 +16,7 @@ class BoardPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 750;    // must be even
-	private static final int FRAME_HEIGHT = 750;
+	private static final int FRAME_HEIGHT = 700;
 	private static final int TOKEN_RADIUS = 8;   // must be even
 	private static final Color[] PLAYER_COLORS = {Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.WHITE};
 	private static final String[] TOKEN_NAME = {"red","blue","yellow","green","magenta","white"};
@@ -29,7 +33,7 @@ class BoardPanel extends JPanel {
 		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setBackground(Color.WHITE);
 		try {
-			boardImage = ImageIO.read(new File("C://Users//Cian//Desktop//board.jpg"));
+			boardImage = ImageIO.read(new File("src//board.jpg"));
 		} catch (IOException ex) {
 			System.out.println("Could not find the image file " + ex.toString());
 		}
