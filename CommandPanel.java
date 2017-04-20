@@ -1,13 +1,10 @@
-// Énna Malone 15357146
-// Cian Kelly 15386256
-// Brian Finlay 15381151
-
 import java.awt.event.ActionEvent;
 import java.util.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.JTextField;
+
 
 public class CommandPanel extends JPanel  {
 	
@@ -17,6 +14,7 @@ public class CommandPanel extends JPanel  {
 	private JTextField commandField = new JTextField(); 
 	private LinkedList<String> commandBuffer = new LinkedList<String>();
 	private String string;
+	
 	
 	CommandPanel () {
 		class AddActionListener implements ActionListener {
@@ -37,6 +35,7 @@ public class CommandPanel extends JPanel  {
 		return;
 	}
 
+	
 	public void inputString() {
 		synchronized (commandBuffer) {
 			while (commandBuffer.isEmpty()) {
@@ -50,6 +49,7 @@ public class CommandPanel extends JPanel  {
 		}
 		return;
 	}
+	
 	
 	public String getString() {
 		return string;

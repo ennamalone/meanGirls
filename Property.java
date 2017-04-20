@@ -1,139 +1,92 @@
-// Énna Malone 15357146
-// Cian Kelly 15386256
-// Brian Finlay 15381151
 
 public class Property extends Square {
 
 	private static final float MORTGAGE_PREMIUM = 1.1f;
-
+	
 	private boolean isOwned;
-	private int value;
-	private int rent[];
-	private Dice dice = new Dice();
-	private int buildings;
-	private String colour;
+	private int price;
 	private Player owner;
-	private int buildPrice;
+	private String shortName;
 	private boolean mortgaged;
 	private int mortgageValue;
-
-	Property (String name, String colour, int buildPrice, int value, int[] rent, int mortgageValue) {
+	
+	Property (String name, int price, String shortName, int mortgageValue) {
 		super(name);
-		this.colour = colour;
-		this.buildPrice = buildPrice;
-		this.value = value;
-		this.rent = rent;
+		this.price = price;
+		this.shortName = shortName;
 		isOwned = false;
+		owner = null;
+		mortgaged = false;
 		this.mortgageValue = mortgageValue;
 		return;
 	}
+		
+// METHODS DEALING WITH PRICE
 
-	public int getBuildPrice(){
-		return buildPrice;
+	public int getPrice () {
+		return price;
 	}
+	
+// METHODS DEALING WITH RENT : 	
 
-	public int getValue () {
-		return value;
+	public int getRent () { // this method is overloaded by the subclasses
+		return 0;  
 	}
-
-	public int getRent () {
-		return rent[0];
+	
+// METHODS DEALING WITH OWNERSHIP
+	
+	public Player getOwner () {
+		return owner;
 	}
-
-	public String getColour() {
-		return colour;
-	}
-
+	
 	public boolean isOwned () {
 		return isOwned;
 	}
-
-	public void setOwner (Player inPlayer) {
-		owner = inPlayer;
+	
+	public void setOwner (Player player) {
+		owner = player;
 		isOwned = true;
 		return;
 	}
 	
-	///////////////////
+	public void releaseOwnership () {
+		isOwned = false;
+		owner = null;
+		mortgaged = false;
+		return;
+	}
+	
+// METHODS DEALING WITH MORTGAGES
 	
 	public void setMortgaged() {
 		mortgaged = true;
 		return;
 	}
-
+	
 	public boolean isMortgaged() {
 		return mortgaged;
 	}
-
+	
 	public void setNotMortgaged() {
 		mortgaged = false;
 		return;
 	}
-
+	
 	public int getMortgageValue() {
 		return mortgageValue;
 	}
-
+	
 	public int getMortgageRemptionPrice () {
 		return (int) (((float) mortgageValue) * MORTGAGE_PREMIUM);
 	}
 	
+// COMMON JAVA METHODS	
 	
-	///////////////////
-	public int getRentColourGroup() 
-	{  // returns rent if all colour group owned by single player
-	return (2*rent[0]);
+	public boolean equals (String string) {
+		return shortName.equals(string);
 	}
 	
-	public int get1StationsOwned() { // rent if single players owns another station
-	return (rent[0]);
+	public String toString () {
+		return super.toString();
 	}
-	
-	public int get2StationsOwned() { // rent if single players owns another 2 stations
-	return 2*(rent[0]);
-	}
-	
-	public int get3StationsOwned() { // rent if single players owns all the stations
-	return 3*(rent[0]);
-	}
-	
-	
-	public int getFactories2Owned(){  // case of one player ownies both factories 
-	return 10*(dice.getTotal());
-	}
-	
-	//////////////////////////
-	
-	/////////////////////////
-	
-	
-		public Player getOwner () {
-			return owner;
-		}
-	
-		public int addBuidings(int noOfBuilds){
-	
-			if(buildings >= 5)
-			{
-				return UI.ERR_TOO_MANY_BUILDINGS;
-			}
-			else
-			{
-				buildings += noOfBuilds;
-				return buildings;
-			}
-		}
-	
-		public int demolishBuidings(int noOfBuilds){
-			buildings -= noOfBuilds;
-			return buildings;
-		}
-	
-		public int getNoOfBuildings(){
-			return buildings;
-		}
-		
-		public boolean hasBuildings () {
-			return buildings > 0;
-		}
-	}
+}

@@ -1,11 +1,9 @@
-// Énna Malone 15357146
-// Cian Kelly 15386256
-// Brian Finlay 15381151
 
 public class Main {
 
 	public static void main (String args[]) {	
-		Monopoly monopoly = new Monopoly();		
+		
+		Monopoly monopoly = new Monopoly(args);		
 		monopoly.inputNames();
 		monopoly.giveStartMoney();
 		monopoly.decideStarter();

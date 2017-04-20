@@ -1,6 +1,3 @@
-// Énna Malone 15357146
-// Cian Kelly 15386256
-// Brian Finlay 15381151
 
 public class Square {
 
@@ -18,4 +15,5 @@ public class Square {
 	public String toString () {
 		return name;
 	}
+	
 }
