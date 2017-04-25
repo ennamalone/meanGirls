@@ -8,9 +8,9 @@ public class meanGirls implements Bot {
 
 	public boolean rollDone = false;
 	public boolean isOwned = false;
-	BoardAPI boardbot;
-	PlayerAPI playerbot;
-	DiceAPI dicebot;
+	public static BoardAPI boardbot;
+	public static PlayerAPI playerbot;
+	public static DiceAPI dicebot;
 
 	
 	meanGirls (BoardAPI board, PlayerAPI player, DiceAPI dice) {
@@ -20,41 +20,36 @@ public class meanGirls implements Bot {
 		return;
 	}
 	
-	public String getName (BoardAPI board, PlayerAPI player, DiceAPI dice) {
-		boardbot = board;
-		playerbot = player;
-		dicebot = dice;
+	public String getName () 
+	{
 		return "meanGirls";
 	}
 	
-	public String getCommand (BoardAPI board, PlayerAPI player, DiceAPI dice) 
+	public String getCommand () 
 	{
-		boardbot = board;
-		playerbot = player;
-		dicebot = dice;
-		
+
 		// Add your code here////////////////////////////////
 		
 		if(!rollDone)
 		{
 			rollDone = true;
-			if(dice.isDouble())
+			if(dicebot.isDouble())
 			{
 				rollDone = false; // sets to false if a double is rolled
 			} 
-			if(player.getPosition() == 7 || player.getPosition() == 9 || player.getPosition() == 10 || player.getPosition() == 11 || player.getPosition() == 13 || player.getPosition() == 14 || player.getPosition() == 16 || player.getPosition() == 18 || player.getPosition() == 19 || player.getPosition() == 21 || player.getPosition() == 21 || player.getPosition() == 22 || player.getPosition() == 23 || player.getPosition() == 25 || player.getPosition() == 26 || player.getPosition() == 27 || player.getPosition() == 29 || player.getPosition() == 31 || player.getPosition() == 32 || player.getPosition() == 34 && !isOwned)
+			if(playerbot.getPosition() == 7 || playerbot.getPosition() == 9 || playerbot.getPosition() == 10 || playerbot.getPosition() == 11 || playerbot.getPosition() == 13 || playerbot.getPosition() == 14 || playerbot.getPosition() == 16 || playerbot.getPosition() == 18 || playerbot.getPosition() == 19 || playerbot.getPosition() == 21 || playerbot.getPosition() == 21 || playerbot.getPosition() == 22 || playerbot.getPosition() == 23 || playerbot.getPosition() == 25 || playerbot.getPosition() == 26 || playerbot.getPosition() == 27 || playerbot.getPosition() == 29 || playerbot.getPosition() == 31 || playerbot.getPosition() == 32 || playerbot.getPosition() == 34 && !isOwned)
 			{ // buy our given appointed houses 
 				return "buy";
 			}
-			else if(player.isInJail() && player.getBalance() >= 350)
+			else if(playerbot.isInJail() && playerbot.getBalance() >= 350)
 			{
 				return "chance";
 			}
-			else if (player.isInJail() && player.getBalance() <= 350)
+			else if (playerbot.isInJail() && playerbot.getBalance() <= 350)
 			{
 				return "pay";
 			}
-			else if(player.getBalance() >= 0 && player.getNumHotelsOwned() == 0 && player.getNumHousesOwned() == 0)
+			else if(playerbot.getBalance() >= 0 && playerbot.getNumHotelsOwned() == 0 && playerbot.getNumHousesOwned() == 0)
 			{
 				return "bankrupt";
 			}
@@ -73,26 +68,6 @@ public class meanGirls implements Bot {
 		return "done";
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return "meanGirls";
-	}
-
-	@Override
-	public String getCommand() {
-		// TODO Auto-generated method stub
-		if(!rollDone)
-		{
-			rollDone = true;
-			return "roll";
-		}
-		else
-		{
-			rollDone = false;
-			return "done";
-		}
-	}
 	
 }
 
