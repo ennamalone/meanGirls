@@ -26,7 +26,7 @@ public class ChanceDeck extends CardDeck {
 		cards.add(new Card(CHANCE_CARD,"Bank pays you divided of " + UI.CURRENCY_SYMBOL + "50.",ACT_RECEIVE,50));
 
 		// Jail
-		cards.add(new Card(CHANCE_CARD,"Go to jail. Move directly to jail. Do not pass Go. Do not collect " + UI.CURRENCY_SYMBOL + "200.",ACT_GOTO_JAIL));
+		// cards.add(new Card(CHANCE_CARD,"Go to jail. Move directly to jail. Do not pass Go. Do not collect " + UI.CURRENCY_SYMBOL + "200.",ACT_GOTO_JAIL));
 		cards.add(new Card(CHANCE_CARD,"Get out of jail free.",ACT_GET_OUT_OF_JAIL));
 
 		shuffle();

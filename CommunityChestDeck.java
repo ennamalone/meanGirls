@@ -26,7 +26,7 @@ public class CommunityChestDeck extends CardDeck {
 		cards.add(new Card(COMMUNITY_CHEST,"It is your birthday. Collect  " + UI.CURRENCY_SYMBOL + "10 from each player",ACT_GIFTS,10));
 
 		// Jail
-		cards.add(new Card(COMMUNITY_CHEST,"Go to jail. Move directly to jail. Do not pass Go. Do not collect " + UI.CURRENCY_SYMBOL + "200.",ACT_GOTO_JAIL));
+	//	cards.add(new Card(COMMUNITY_CHEST,"Go to jail. Move directly to jail. Do not pass Go. Do not collect " + UI.CURRENCY_SYMBOL + "200.",ACT_GOTO_JAIL));
 		cards.add(new Card(COMMUNITY_CHEST,"Get out of jail free. This card may be kept until needed or sold",ACT_GET_OUT_OF_JAIL));
 		
 		return;
