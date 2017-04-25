@@ -6,6 +6,19 @@ public class meanGirls implements Bot {
 	// YourTeamName may not alter the state of the board or the player objects
 	// It may only inspect the state of the board and the player objects
 
+	
+	
+	
+	
+	
+	
+	
+	//problems: if one bot goes to jail and the turn switches if continues to use commands for the jailed bot 
+	// : can't figure out how to check if colour group is owned and to then build and morguague houses 
+	// perhaps change to switch statements?
+	// any other errors let me know 
+	
+	
 	public boolean rollDone = false;
 	public boolean isOwned1 = false;
 	public boolean isOwned2 = false;
@@ -29,7 +42,7 @@ public class meanGirls implements Bot {
 	public static BoardAPI boardbot;
 	public static PlayerAPI playerbot;
 	public static DiceAPI dicebot;
-
+	
 	
 	meanGirls (BoardAPI board, PlayerAPI player, DiceAPI dice) {
 		boardbot = board;
@@ -45,8 +58,7 @@ public class meanGirls implements Bot {
 	
 	public String getCommand () 
 	{
-		// Add your code here////////////////////////////////
-		
+		// Add your code here////////////////////////////////		
 		if(!rollDone)
 		{
 			rollDone = true;
