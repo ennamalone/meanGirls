@@ -1,90 +1,143 @@
-
-public class meanGirls implements Bot {
-	
+public class meanGirls implements Bot
+{
 	// The public API of YourTeamName must not change
 	// You cannot change any other classes
 	// YourTeamName may not alter the state of the board or the player objects
 	// It may only inspect the state of the board and the player objects
-	
-	//problems: if one bot goes to jail and the turn switches if continues to use commands for the jailed bot 
-	// : can't figure out how to check if colour group is owned and to then build and morguague houses 
-	// perhaps change to switch statements?
-	// any other errors let me know 
 
-	public boolean rollDone = false;
+	boolean hasRolled = false;
+	boolean ReleasedFromJail = false;
+	static final int PASS_GO_ROLLS = 10; // Average amount of dice rolls it takes before completing one lap of the board i.e. EARLY GAME
+	int rollCount = 0;
+	int doubleCount = 0;
 	private Site site;
-	public static BoardAPI boardbot;
-	public static PlayerAPI playerbot;
-	public static DiceAPI dicebot;
+	private Utility utility;
+	private Station station;
+	PlayerAPI thisplayer;
+	BoardAPI thisboard;
+	DiceAPI thisdice;
 
-	
-	meanGirls (BoardAPI board, PlayerAPI player, DiceAPI dice) {
-		boardbot = board;
-		playerbot = player;
-		dicebot = dice;
+	meanGirls (BoardAPI board, PlayerAPI player, DiceAPI dice)
+	{
+		this.thisplayer = player;
+		this.thisboard = board;
+		this.thisdice = dice;
 		return;
 	}
-	
-	public String getName () 
+
+	public String getName()
 	{
 		return "meanGirls";
 	}
-	
-	public String getCommand () 
+
+	public String getCommand()
 	{
-		// Add your code here////////////////////////////////
-		
-		if(!rollDone)
-		{
-			rollDone = true;
-			/*if(dicebot.isDouble())
+		rollCount = rollCount + 1;
+
+		String inputCommand = "";
+
+			if(!hasRolled) // Makes first roll of the turn
 			{
-				rollDone = false; // sets to false if a double is rolled
-			} */
-			
-			
-			if(rollDone == true)
-			{	
-				if(boardbot.getSquare(playerbot.getPosition()) instanceof Site)
+				inputCommand = "roll";
+				hasRolled = true;
+			}
+
+			else if(thisplayer.isInJail()) // Pay out of jail to avoid wasting time and miss out on buying properties
+			{
+				inputCommand = "pay";
+				ReleasedFromJail = true;
+			}
+
+
+			else if(thisboard.getSquare(thisplayer.getPosition()) instanceof Site)
+			{ // Runs when they land on an ordinary property
+				site = (Site) thisboard.getSquare(thisplayer.getPosition());
+
+				if(thisplayer.getBalance() > site.getPrice() && !site.isOwned())
 				{
-					site = (Site) boardbot.getSquare(playerbot.getPosition());
-					
-					if(!site.isOwned())
-					{
-						return "buy";
-					}
+					inputCommand = "buy"; //buys any property as long as they can afford it
+				}
+
+				else if(thisdice.isDouble())
+				{
+					inputCommand = "roll";
+				}
+
+				else
+				{
+					hasRolled = false;
+					inputCommand = "done";
 				}
 			}
-			
-			if(playerbot.isInJail() && playerbot.getBalance() <= 350) // case for in jail late game
+
+			else if(thisboard.getSquare(thisplayer.getPosition()) instanceof Station) // Land on a station
 			{
-				///
-				return "pay";
+				station = (Station) thisboard.getSquare(thisplayer.getPosition());
+
+				if(thisplayer.getBalance() > station.getPrice() && !station.isOwned())
+				{
+					inputCommand = "buy";				}
+
+				else if(thisdice.isDouble())
+				{
+					inputCommand = "roll";
+				}
+
+				else
+				{
+					hasRolled = false;
+					inputCommand = "done";
+				}
 			}
-			else if (playerbot.isInJail() && playerbot.getBalance() >= 350) // case for in jail early game
+
+			else if(thisboard.getSquare(thisplayer.getPosition()) instanceof Utility)
 			{
-				return "pay";
+				utility = (Utility) thisboard.getSquare(thisplayer.getPosition());
+
+				if(thisplayer.getBalance() > utility.getPrice() && !utility.isOwned())
+				{
+					inputCommand = "buy"; 
+				}
+
+				else if(thisdice.isDouble())
+				{
+					inputCommand = "roll";
+				}
+
+				else
+				{
+					hasRolled = false;
+					inputCommand = "done";
+				}
 			}
-			
-			if(playerbot.getBalance() <= 0 && playerbot.getNumHotelsOwned() == 0 && playerbot.getNumHousesOwned() == 0)
+
+			else if(thisboard.getSquare(thisplayer.getPosition()) instanceof CommunityChest || thisboard.getSquare(thisplayer.getPosition()) instanceof Chance || thisboard.getSquare(thisplayer.getPosition()) instanceof Tax || thisboard.getSquare(thisplayer.getPosition()) instanceof Square)
 			{
-				return "bankrupt";
-			} 
-			
-			return "roll";
-		}
-		else
-		{
-			rollDone = false;
-			return "done";
-		}
-	}
-	
-	public String getDecision () 
-	{
-		// Add your code here
-		return "done";
+				if(!thisdice.isDouble())
+				{
+					hasRolled = false;
+					inputCommand = "done";
+				}
+
+				else if(ReleasedFromJail && !thisdice.isDouble())
+				{
+					hasRolled = false;
+					ReleasedFromJail = false;
+					inputCommand = "done";
+				}
+
+				else if(thisdice.isDouble() && !ReleasedFromJail)
+				{
+					inputCommand = "roll";
+				}
+			}
+		
+		return inputCommand;
 	}
 
-	// || playerbot.getPosition() == 9 || playerbot.getPosition() == 10 || playerbot.getPosition() == 11 || playerbot.getPosition() == 13 || playerbot.getPosition() == 14 || playerbot.getPosition() == 16 || playerbot.getPosition() == 18 || playerbot.getPosition() == 19 || playerbot.getPosition() == 21 || playerbot.getPosition() == 21 || playerbot.getPosition() == 22 || playerbot.getPosition() == 23 || playerbot.getPosition() == 25 || playerbot.getPosition() == 26 || playerbot.getPosition() == 27 || playerbot.getPosition() == 29 || playerbot.getPosition() == 31 || playerbot.getPosition() == 32 || playerbot.getPosition() == 34
+	public String getDecision()
+	{
+		String inputCommand = "roll";
+		return inputCommand;
+	}
 }
