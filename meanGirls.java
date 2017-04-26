@@ -30,7 +30,7 @@ public class meanGirls implements Bot {
 	public static PlayerAPI playerbot;
 	public static DiceAPI dicebot;
 	int i = 0;
-	private String[] bought = new String [40]; 
+	private String[] bought = new String [80]; 
 	
 	meanGirls (BoardAPI board, PlayerAPI player, DiceAPI dice) {
 		boardbot = board;
@@ -59,7 +59,7 @@ public class meanGirls implements Bot {
 		{
 			colouredProperty = true;
 		}
-		if(playerbot.getProperties().equals("Strand")  && playerbot.getProperties().equals("Fleet St") && playerbot.getProperties().equals("Trafalger Sq"))
+		if(playerbot.getProperties().equals("Strand")  && playerbot.getProperties().equals("Fleet St") && playerbot.getProperties().equals("Trafalgar Sq"))
 		{
 			colouredProperty = true;
 		}
@@ -260,12 +260,12 @@ public class meanGirls implements Bot {
 				}
 				return "done";
 			}
-			if(playerbot.getBalance() <= 700 && colouredProperty)
+			if(playerbot.getBalance() <= 200 && colouredProperty)
 			{
 				for(i = 0; i <= 25;)
 				{
 					i++;
-					return "demolish" + bought[i] + 3; // destroys house to gain finance 
+					return "demolish" + bought[i] + 3; // destroys house to gain finance if less 200 in balance
 				}
 				return "done";
 			}
